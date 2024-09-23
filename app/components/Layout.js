@@ -61,10 +61,15 @@ export default function Layout({ children, params, t }) {
       >
         <AppBar position="static" sx={{ bgcolor: '#000' }}> {/* 黑色背景 */}
           <Toolbar>
-            <Image src={logo} alt="Logo" width={40} height={40} /> {/* 添加 logo */}
-            <Typography variant="h6" sx={{ flexGrow: 1, color: '#fff', ml: 2 }}> {/* 白色文字 */}
-              Humanize-AI.top
-            </Typography>
+            <NextLink href="/" passHref>
+              <Link color="inherit" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <Image src={logo} alt="Logo" width={40} height={40} /> {/* 添加 logo */}
+                <Typography variant="h6" sx={{ flexGrow: 1, color: '#fff', ml: 2 }}> {/* 白色文字 */}
+                  Humanize-AI.top
+                </Typography>
+              </Link>
+            </NextLink>
+            <Box sx={{ flexGrow: 1 }} />
             <NextLink href="/" passHref>
               <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
                 Home
@@ -88,6 +93,11 @@ export default function Layout({ children, params, t }) {
             <IconButton onClick={colorMode.toggleColorMode} color="inherit">
               {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
+            <NextLink href="/history" passHref>
+              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
+                History
+              </Link>
+            </NextLink>
           </Toolbar>
         </AppBar>
         <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>

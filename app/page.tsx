@@ -12,6 +12,8 @@ import Layout from './components/Layout';
 import TextInput from './components/TextInput';
 import TextOutput from './components/TextOutput';
 import translations from './translations'; // 确保路径正确
+import { auth, db } from '../firebaseConfig';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const styles = {
   Standard: 'Make the text more human-like and simple.',
@@ -54,6 +56,18 @@ export default function HomePage({ params }) {
       const data = await response.json();
       setMessages(data.messages);
       setOutputText(data.messages[data.messages.length - 1].content);
+
+      // 保存历史记录
+      const user = auth.currentUser;
+      if (user) {
+        const historyRef = collection(db, 'users', user.uid, 'history');
+        await addDoc(historyRef, {
+          inputText,
+          outputText: data.messages[data.messages.length - 1].content,
+          style,
+          timestamp: serverTimestamp(),
+        });
+      }
     } catch (error) {
       console.error('Error:', error);
       // 可以在这里添加错误处理逻辑，比如显示错误消息给用户
