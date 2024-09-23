@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { auth, db } from '../../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../components/Layout';
 
 export default function AccountPage() {
-  const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
