@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Box,
@@ -17,9 +17,13 @@ import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import logo from '../../public/logo.svg'; // 引入 logo
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
+import NextLink from 'next/link';
 
 export default function Layout({ children, params, t }) {
   const [mode, setMode] = useState('light');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const theme = useTheme();
   const colorMode = {
     toggleColorMode: () => {
@@ -32,6 +36,14 @@ export default function Layout({ children, params, t }) {
       mode,
     },
   });
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <ThemeProvider theme={themeConfig}>
@@ -53,15 +65,26 @@ export default function Layout({ children, params, t }) {
             <Typography variant="h6" sx={{ flexGrow: 1, color: '#fff', ml: 2 }}> {/* 白色文字 */}
               Humanize-AI.top
             </Typography>
-            <Link href="/" color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
-              Home
-            </Link>
-            <Link href="/about" color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
-              About
-            </Link>
-            <Link href="/contact" color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
-              Contact
-            </Link>
+            <NextLink href="/" passHref>
+              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
+                Home
+              </Link>
+            </NextLink>
+            <NextLink href="/about" passHref>
+              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
+                About
+              </Link>
+            </NextLink>
+            <NextLink href="/contact" passHref>
+              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
+                Contact
+              </Link>
+            </NextLink>
+            <NextLink href={isLoggedIn ? "/account" : "/login"} passHref>
+              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
+                {isLoggedIn ? "Account" : "Login"}
+              </Link>
+            </NextLink>
             <IconButton onClick={colorMode.toggleColorMode} color="inherit">
               {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>

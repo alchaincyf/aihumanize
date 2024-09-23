@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import TextInput from './components/TextInput';
 import TextOutput from './components/TextOutput';
 import translations from './translations'; // 确保路径正确
+
 const styles = {
   Standard: 'Make the text more human-like and simple.',
   Academic: 'Make the text more academic and formal.',
@@ -26,7 +27,7 @@ const styles = {
 export default function HomePage({ params }) {
   const t = (key) => {
     const lang = params?.lang || 'en'; // 默认语言为 'en'
-    return translations[lang]?.[key] || key; // 如果找不到翻译，返回键本身
+    return translations[lang]?.[key] || key; // 如果找不到翻译返回键本身
   };
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');

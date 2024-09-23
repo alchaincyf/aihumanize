@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+'use client';
+
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -12,10 +13,6 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-export const metadata: Metadata = {
-  title: "Humanize AI Text",
-  description: "Bypass AI Detection with Humanize AI Text",
-};
 
 export default function RootLayout({
   children,
@@ -24,9 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>
     </html>
