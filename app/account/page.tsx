@@ -8,9 +8,16 @@ import { doc, getDoc } from 'firebase/firestore';
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../components/Layout';
 
+interface UserData {
+  points: number;
+  pointsExpiry: string;
+  accountLevel: string;
+  levelExpiry: string;
+}
+
 export default function AccountPage() {
   const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -19,7 +26,7 @@ export default function AccountPage() {
         setUser(currentUser);
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
         if (userDoc.exists()) {
-          setUserData(userDoc.data());
+          setUserData(userDoc.data() as UserData);
         } else {
           console.error('No such document!');
         }
