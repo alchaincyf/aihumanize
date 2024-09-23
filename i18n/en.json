@@ -1,0 +1,6 @@
+{
+  "title": "AI Humanize",
+  "inputPlaceholder": "Enter your text here...",
+  "outputPlaceholder": "Humanized text will appear here...",
+  "humanizeButton": "Humanize"
+}

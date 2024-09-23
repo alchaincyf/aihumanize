@@ -1,0 +1,6 @@
+{
+  "title": "AI Humanize",
+  "inputPlaceholder": "在此输入您的文本...",
+  "outputPlaceholder": "优化后的文本将显示在这里...",
+  "humanizeButton": "优化"
+}

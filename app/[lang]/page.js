@@ -8,10 +8,11 @@ import {
   Button,
   Tooltip,
 } from '@mui/material';
-import Layout from './components/Layout';
-import TextInput from './components/TextInput';
-import TextOutput from './components/TextOutput';
-import translations from './translations'; // 确保路径正确
+import Layout from '../components/Layout';
+import TextInput from '../components/TextInput';
+import TextOutput from '../components/TextOutput';
+import translations from '../translations'; // 确保路径正确
+
 const styles = {
   Standard: 'Make the text more human-like and simple.',
   Academic: 'Make the text more academic and formal.',
@@ -63,11 +64,11 @@ export default function HomePage({ params }) {
 
   return (
     <Layout params={params} t={t}>
-      <Box sx={{ textAlign: 'center', mb: 3 }}> {/* 调整 margin-bottom */}
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h2">Humanize AI Text</Typography>
         <Typography variant="h5">Bypass AI Detection</Typography>
       </Box>
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}> {/* 调整 margin-bottom */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
         {Object.keys(styles).map((styleKey) => (
           <Tooltip key={styleKey} title={styles[styleKey]}>
             <Box
@@ -96,10 +97,9 @@ export default function HomePage({ params }) {
             borderRadius: 1,
             p: 3,
             boxShadow: 3,
-            bgcolor: 'var(--main-area-background)', // 使用新的背景色变量
+            bgcolor: 'background.paper',
             position: 'relative',
             height: '75vh', // 增加高度
-            top: '-10px', // 向上移动10px
           }}
         >
           <TextInput
@@ -124,10 +124,9 @@ export default function HomePage({ params }) {
             borderRadius: 1,
             p: 3,
             boxShadow: 3,
-            bgcolor: 'var(--main-area-background)', // 使用新的背景色变量
+            bgcolor: 'background.paper',
             position: 'relative',
             height: '75vh', // 增加高度
-            top: '-10px', // 向上移动10px
           }}
         >
           {isLoading ? (

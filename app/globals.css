@@ -5,12 +5,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --main-area-background: #f0f0f0; /* 默认模式下的主要区域背景色 */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --main-area-background: rgba(0, 0, 0, 0.8); /* 夜间模式下的主要区域背景色，80%黑 */
   }
 }
 
@@ -25,3 +27,19 @@ body {
     text-wrap: balance;
   }
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0 2rem;
+}
+
+.title {
+  font-size: 2rem; /* 调整字体大小 */
+  margin-bottom: 1rem; /* 调整与下方元素的间距 */
+}
+
+/* 其他全局样式 */
