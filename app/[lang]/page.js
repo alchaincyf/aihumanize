@@ -66,7 +66,7 @@ export default function HomePage({ params }) {
     <Layout params={params} t={t}>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h2">Humanize AI Text</Typography>
-        <Typography variant="h5">Bypass AI Detection</Typography>
+        <Typography variant="h5">Effortlessly convert AI-generated text from ChatGPT, Bard, Jasper, Grammarly, GPT4, and more into natural, human-like writing. Achieve 100% originality and bypass AI detection with the best Humanize AI tool.</Typography>
       </Box>
       <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
         {Object.keys(styles).map((styleKey) => (

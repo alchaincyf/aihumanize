@@ -4,7 +4,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '../../firebaseConfig';
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { Box, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 import Layout from '../components/Layout';
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Box, Button, TextField, Typography, Link } from '@mui/material';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth, db } from '../../firebaseConfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';

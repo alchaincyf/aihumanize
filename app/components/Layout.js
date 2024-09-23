@@ -21,7 +21,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
 import NextLink from 'next/link';
 
-export default function Layout({ children, params, t }) {
+export default function Layout({ children }) {
   const [mode, setMode] = useState('light');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const theme = useTheme();
