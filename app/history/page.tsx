@@ -17,7 +17,7 @@ interface HistoryItem {
 }
 
 export default function HistoryPage() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const router = useRouter();
 
