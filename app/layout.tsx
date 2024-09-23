@@ -23,8 +23,8 @@ export default function RootLayout({
 }>) {
   useEffect(() => {
     window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      window.dataLayer.push(arguments);
+    function gtag(...args: any[]) {
+      window.dataLayer.push(args);
     }
     gtag('js', new Date());
     gtag('config', 'G-M0EW39RN13');
