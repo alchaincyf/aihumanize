@@ -19,6 +19,7 @@ import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import logo from '../../public/logo.svg';
 import NextLink from 'next/link';
+import { User } from 'firebase/auth';
 
 interface LayoutProps {
   children: ReactNode;
@@ -48,7 +49,7 @@ export default function Layout({ children, params, t }: LayoutProps) {
     const { auth } = require('../../firebaseConfig');
     const { onAuthStateChanged } = require('firebase/auth');
     
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
       setIsLoggedIn(!!user);
     });
 
