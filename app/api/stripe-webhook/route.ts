@@ -35,11 +35,13 @@ export async function POST(req: Request) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     const priceId = subscription.items.data[0].price.id;
 
-    let subscriptionType;
+    let subscriptionType, wordsLimit;
     if (priceId === 'price_pro') {
       subscriptionType = 'pro';
+      wordsLimit = 50000;
     } else if (priceId === 'price_promax') {
       subscriptionType = 'promax';
+      wordsLimit = 250000;
     } else {
       console.error('Invalid price ID:', priceId);
       return NextResponse.json({ error: 'Invalid subscription type' }, { status: 400 });
@@ -48,21 +50,71 @@ export async function POST(req: Request) {
     const userRef = doc(db, 'users', customerId);
     const userDoc = await getDoc(userRef);
 
+    const now = new Date();
+    const expiryDate = new Date(now.setDate(now.getDate() + 30));
+
     if (userDoc.exists()) {
       await updateDoc(userRef, {
         accountLevel: subscriptionType,
         subscriptionId: subscriptionId,
         subscriptionStatus: 'active',
+        wordsLimit: wordsLimit,
+        wordsUsed: 0,
+        planExpiryDate: expiryDate.toISOString(),
       });
     } else {
       await setDoc(userRef, {
         accountLevel: subscriptionType,
         subscriptionId: subscriptionId,
         subscriptionStatus: 'active',
-        points: 5000,
-        pointsExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        wordsLimit: wordsLimit,
+        wordsUsed: 0,
+        planExpiryDate: expiryDate.toISOString(),
       });
     }
+  } else if (event.type === 'invoice.paid') {
+    const invoice = event.data.object as Stripe.Invoice;
+    const subscriptionId = invoice.subscription as string;
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    const customerId = subscription.customer as string;
+
+    // 获取价格 ID 和对应的订阅类型
+    const priceId = subscription.items.data[0].price.id;
+    let subscriptionType, wordsLimit;
+    if (priceId === 'price_pro') {
+      subscriptionType = 'pro';
+      wordsLimit = 50000;
+    } else if (priceId === 'price_promax') {
+      subscriptionType = 'promax';
+      wordsLimit = 250000;
+    } else {
+      console.error('Invalid price ID:', priceId);
+      return NextResponse.json({ error: 'Invalid subscription type' }, { status: 400 });
+    }
+
+    // 更新用户文档
+    const userRef = doc(db, 'users', customerId);
+    const now = new Date();
+    const expiryDate = new Date(now.setDate(now.getDate() + 30));
+
+    await updateDoc(userRef, {
+      accountLevel: subscriptionType,
+      subscriptionStatus: 'active',
+      wordsLimit: wordsLimit,
+      wordsUsed: 0, // 重置使用量
+      planExpiryDate: expiryDate.toISOString(),
+    });
+  } else if (event.type === 'customer.subscription.deleted') {
+    const subscription = event.data.object as Stripe.Subscription;
+    const customerId = subscription.customer as string;
+
+    const userRef = doc(db, 'users', customerId);
+    await updateDoc(userRef, {
+      accountLevel: 'free',
+      subscriptionStatus: 'inactive',
+      wordsLimit: 5000, // 或者你的免费计划的限制
+      planExpiryDate: null,
+    });
   }
 
   return NextResponse.json({ received: true });
