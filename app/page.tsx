@@ -15,6 +15,12 @@ import translations from './translations'; // 确保路径正确
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
+type Translations = {
+  [key: string]: {
+    [key: string]: string;
+  };
+};
+
 const styles = {
   Standard: 'Make the text more human-like and simple.',
   Academic: 'Make the text more academic and formal.',
@@ -34,8 +40,8 @@ interface HomePageProps {
 
 export default function HomePage({ params }: HomePageProps) {
   const t = (key: string) => {
-    const lang = params?.lang || 'en'; // 默认语言为 'en'
-    return translations[lang]?.[key] || key; // 如果找不到翻译返回键本身
+    const lang = params?.lang || 'en';
+    return (translations as Translations)[lang]?.[key] || key;
   };
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
