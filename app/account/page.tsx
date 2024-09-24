@@ -14,7 +14,8 @@ interface UserData {
   points: number;
   pointsExpiry: string;
   accountLevel: string;
-  levelExpiry: string;
+  subscriptionId?: string;
+  subscriptionStatus?: string;
 }
 
 export default function AccountPage() {
@@ -63,7 +64,12 @@ export default function AccountPage() {
         <Typography variant="body1" sx={{ mb: 1 }}>Points: {userData.points}</Typography>
         <Typography variant="body1" sx={{ mb: 1 }}>Points Expiry: {userData.pointsExpiry}</Typography>
         <Typography variant="body1" sx={{ mb: 1 }}>Account Level: {userData.accountLevel}</Typography>
-        <Typography variant="body1" sx={{ mb: 1 }}>Level Expiry: {userData.levelExpiry}</Typography>
+        {userData.subscriptionId && (
+          <Typography variant="body1" sx={{ mb: 1 }}>Subscription ID: {userData.subscriptionId}</Typography>
+        )}
+        {userData.subscriptionStatus && (
+          <Typography variant="body1" sx={{ mb: 1 }}>Subscription Status: {userData.subscriptionStatus}</Typography>
+        )}
         <Button variant="contained" color="primary" onClick={handleLogout} sx={{ mt: 2 }}>Logout</Button>
       </Box>
     </Layout>

@@ -103,6 +103,9 @@ export default function Layout({ children, params, t }: LayoutProps) {
             <NextLink href="/history" passHref legacyBehavior>
               <Button component="a" color="inherit">History</Button>
             </NextLink>
+            <NextLink href="/pricing" passHref legacyBehavior>
+              <Button component="a" color="inherit">Pricing</Button>
+            </NextLink>
           </Toolbar>
         </AppBar>
         <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
