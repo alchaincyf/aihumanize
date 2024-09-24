@@ -2,11 +2,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography, Button, Paper, Grid, Chip } from '@mui/material';
+import { Box, Container, Typography, Button, Paper, Grid, Chip, CircularProgress } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import Layout from '../components/Layout';
 import { auth } from '../../firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 interface PricingTier {
   title: string;
@@ -60,15 +61,14 @@ const pricingTiers: PricingTier[] = [
 ];
 
 const PricingCard: React.FC<PricingTier> = ({ title, price, paymentLink, features, buttonText, isPopular }) => {
-  const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId(null);
-      }
+      setIsAuthenticated(!!user);
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
@@ -76,15 +76,18 @@ const PricingCard: React.FC<PricingTier> = ({ title, price, paymentLink, feature
 
   const handleSubscribe = () => {
     if (paymentLink) {
-      if (userId) {
-        const urlWithUserId = `${paymentLink}&client_reference_id=${userId}`;
+      if (isAuthenticated) {
+        const urlWithUserId = `${paymentLink}&client_reference_id=${auth.currentUser?.uid}`;
         window.location.href = urlWithUserId;
       } else {
-        // 如果用户未登录，重定向到登录页面
-        window.location.href = '/login?redirect=pricing';
+        router.push('/login?redirect=pricing');
       }
     }
   };
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Paper elevation={3} sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
