@@ -4,7 +4,7 @@ import { db } from '../../../firebaseConfig';
 import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20' as '2023-08-16', // 使用类型断言
+  apiVersion: '2023-10-16',
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
