@@ -31,7 +31,7 @@ export default function TextOutput({ value }) {
         fullWidth
         value={value}
         multiline
-        rows={22}
+        rows={21}
         InputProps={{
           readOnly: true,
         }}
@@ -49,14 +49,14 @@ export default function TextOutput({ value }) {
       />
       <Typography
         variant="body2"
-        sx={{ position: 'absolute', bottom: 8, left: 16, color: 'text.secondary' }}
+        sx={{ position: 'absolute', bottom: 2, left: 16, color: 'text.secondary' }}
       >
         {wordCount} words
       </Typography>
       <Tooltip title={copySuccess ? "Copied!" : "Copy"}>
         <IconButton
           onClick={handleCopy}
-          sx={{ position: 'absolute', bottom: 8, right: 16 }}
+          sx={{ position: 'absolute', bottom: 0, right: 0 }}
         >
           <ContentCopy />
         </IconButton>

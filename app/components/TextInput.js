@@ -26,7 +26,7 @@ export default function TextInput({ value, onChange, t }) {
         variant="outlined"
         margin="normal"
         multiline
-        rows={22}
+        rows={21}
         sx={{
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
@@ -40,7 +40,7 @@ export default function TextInput({ value, onChange, t }) {
       />
       <Typography
         variant="body2"
-        sx={{ position: 'absolute', bottom: 8, left: 16, color: 'text.secondary' }}
+        sx={{ position: 'absolute', bottom: 0, left: 16, color: 'text.secondary' }}
       >
         {wordCount} words
       </Typography>
