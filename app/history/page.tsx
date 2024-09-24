@@ -2,9 +2,9 @@
 
 import { useState, useEffect, Fragment } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from '../../firebaseConfig';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, Timestamp } from 'firebase/firestore';
 import { Box, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
 import Layout from '../components/Layout';
 
@@ -12,7 +12,7 @@ interface HistoryItem {
   id: string;
   inputText: string;
   outputText: string;
-  timestamp: Date;
+  timestamp: Timestamp;
   style: string;
 }
 
