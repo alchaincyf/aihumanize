@@ -105,13 +105,19 @@ export default function Layout({ children, params, t }: LayoutProps) {
         <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
           {children}
         </Container>
-        <Box component="footer" sx={{ py: 3, px: 2, mt: 'auto', bgcolor: '#000' }}>
-          <Container maxWidth="lg">
-            <Typography variant="body1" sx={{ color: '#fff' }}>
-              My sticky footer can be found here.
-            </Typography>
+        
+        <Box component="footer" sx={{ py: 4, px: 2, mt: 'auto', bgcolor: '#000', height: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <Container maxWidth="lg" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <NextLink href="/" passHref>
+              <Box component="a" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'white' }}>
+                <Image src={logo} alt="Logo" width={40} height={40} />
+                <Typography variant="h6" sx={{ ml: 2, color: '#fff' }}>
+                  Humanize-AI.top
+                </Typography>
+              </Box>
+            </NextLink>
             <Typography variant="body2" color="text.secondary" sx={{ color: '#fff' }}>
-              © 2023 Your Company. All rights reserved.
+              © 2024 Humanize-AI.top. All rights reserved.
             </Typography>
           </Container>
         </Box>

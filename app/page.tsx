@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -17,7 +17,7 @@ import translations from './translations'; // 确保路径正确
 // @ts-ignore
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { useRouter } from 'next/navigation'; // 添加这行
+import { useRouter } from 'next/navigation'; // 使用 next/navigation 而不是 next/router
 
 type Translations = {
   [key: string]: {
@@ -43,7 +43,8 @@ interface HomePageProps {
 }
 
 export default function HomePage({ params }: HomePageProps) {
-  const router = useRouter(); // 添加这行
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter(); // 使用 next/navigation 的 useRouter
   const t = (key: string) => {
     const lang = params?.lang || 'en';
     return (translations as Translations)[lang]?.[key] || key;
@@ -53,6 +54,10 @@ export default function HomePage({ params }: HomePageProps) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [style, setStyle] = useState('Standard');
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleHumanize = async () => {
     setIsLoading(true);
@@ -88,6 +93,10 @@ export default function HomePage({ params }: HomePageProps) {
       setIsLoading(false);
     }
   };
+
+  if (!isClient) {
+    return null; // 或者返回一个加载指示器
+  }
 
   return (
     <Layout params={params} t={t}>

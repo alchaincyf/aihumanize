@@ -23,12 +23,12 @@ export default function LoginPage() {
         // @ts-ignore
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        // 设置新用户的默认等级和积分
+        // 设置新用户的默认等级和 words
         // @ts-ignore
         await setDoc(doc(db, 'users', user.uid), {
           accountLevel: 'lv0',
-          points: 5000,
-          pointsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
+          wordsLimit: 5000,
+          wordsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
         });
         router.push('/account');
       } else {
@@ -52,12 +52,12 @@ export default function LoginPage() {
       // @ts-ignore
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (!userDoc.exists()) {
-        // 设置新用户的默认等级和积分
+        // 设置新用户的默认等级和 words
         // @ts-ignore
         await setDoc(doc(db, 'users', user.uid), {
           accountLevel: 'lv0',
-          points: 5000,
-          pointsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
+          wordsLimit: 5000,
+          wordsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
         });
       }
       router.push('/account');

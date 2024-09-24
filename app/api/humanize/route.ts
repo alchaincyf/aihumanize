@@ -24,20 +24,16 @@ export async function POST(request: Request) {
     const { text, userId, style, messages } = await request.json();
     console.log('Received request:', { text, userId, style });
 
-    // 计算输入文本的单词数
     const wordCount = text.trim().split(/\s+/).length;
 
-    // 如果单词数不超过200，直接处理
     if (wordCount <= 200) {
       return await processAIRequest(text, style, messages);
     }
 
-    // 如果超过200个单词，需要验证用户
     if (!userId) {
       return NextResponse.json({ error: 'Login required for texts over 200 words', requireLogin: true }, { status: 401 });
     }
 
-    // 检查用户权限和使用量
     const userRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userRef);
     const userData = userDoc.data();
@@ -47,23 +43,23 @@ export async function POST(request: Request) {
     }
 
     const now = new Date();
-    const expiryDate = new Date(userData.planExpiryDate);
+    const subscriptionEndDate = new Date(userData.subscriptionEndDate);
 
-    if (now > expiryDate || userData.wordsUsed >= userData.wordsLimit) {
-      return NextResponse.json({ error: 'Word limit exceeded or plan expired' }, { status: 403 });
+    if (now > subscriptionEndDate || userData.subscriptionStatus !== 'active') {
+      return NextResponse.json({ error: 'Subscription expired' }, { status: 403 });
     }
 
-    // 检查用户是否有足够的 words
-    if (userData.wordsLimit - userData.wordsUsed < wordCount) {
-      return NextResponse.json({ error: 'Insufficient words in account' }, { status: 403 });
+    if (userData.wordsUsed + wordCount > userData.wordsLimit) {
+      return NextResponse.json({ error: 'Word limit exceeded' }, { status: 403 });
     }
 
-    // 处理 AI 请求
     const aiResponse = await processAIRequest(text, style, messages);
 
-    // 更新使用量
     const newWordsUsed = userData.wordsUsed + wordCount;
+    console.log('Updating wordsUsed:', { userId, newWordsUsed });
+
     await updateDoc(userRef, { wordsUsed: newWordsUsed });
+    console.log('wordsUsed updated successfully');
 
     return aiResponse;
   } catch (error) {

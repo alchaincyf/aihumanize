@@ -15,7 +15,7 @@ interface UserData {
   subscriptionStatus: string;
   wordsLimit: number;
   wordsUsed: number;
-  planExpiryDate: string;
+  wordsExpiry: string;
 }
 
 export default function AccountPage() {
@@ -65,11 +65,11 @@ export default function AccountPage() {
       <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4, p: 3 }}>
         <Typography variant="h4" gutterBottom>Account Information</Typography>
         <Typography variant="body1">Email: {user.email}</Typography>
-        <Typography variant="body1">Account Level: {userData.accountLevel}</Typography>
-        <Typography variant="body1">Subscription Status: {userData.subscriptionStatus}</Typography>
-        <Typography variant="body1">Words Limit: {userData.wordsLimit}</Typography>
-        <Typography variant="body1">Words Used: {userData.wordsUsed}</Typography>
-        <Typography variant="body1">Plan Expiry Date: {new Date(userData.planExpiryDate).toLocaleDateString()}</Typography>
+        <Typography variant="body1">Account Level: {userData.accountLevel || 'Free'}</Typography>
+        <Typography variant="body1">Subscription Status: {userData.subscriptionStatus || 'Inactive'}</Typography>
+        <Typography variant="body1">Words Limit: {userData.wordsLimit || 'N/A'}</Typography>
+        <Typography variant="body1">Words Used: {userData.wordsUsed || 0}</Typography>
+        <Typography variant="body1">Words Expiry: {userData.wordsExpiry ? new Date(userData.wordsExpiry).toLocaleDateString() : 'N/A'}</Typography>
         <Button variant="contained" color="primary" onClick={handleLogout} sx={{ mt: 2 }}>Logout</Button>
       </Box>
     </Layout>

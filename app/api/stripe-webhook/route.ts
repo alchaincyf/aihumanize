@@ -4,7 +4,7 @@ import { db } from '../../../firebaseConfig';
 import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16', // 使用当前支持的最新版本
+  apiVersion: '2023-10-16',
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -86,8 +86,10 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   await updateDoc(userRef, {
     accountLevel: 'free',
     subscriptionStatus: 'inactive',
-    wordsLimit: 5000, // 或者您的免费计划的限制
+    wordsLimit: 5000, // 免费计划的限制
+    wordsUsed: 0,
     subscriptionId: null,
+    wordsExpiry: null,
   });
   console.log(`Subscription cancelled for user ${customerId}`);
 }
@@ -112,19 +114,17 @@ function getSubscriptionDetails(subscription: Stripe.Subscription) {
 async function updateUserSubscription(customerId: string, subscriptionType: string, wordsLimit: number, subscriptionId: string) {
   const userRef = doc(db, 'users', customerId);
   const userDoc = await getDoc(userRef);
-
   const now = new Date();
-  const expiryDate = new Date(now.setDate(now.getDate() + 30));
-
+  const wordsExpiry = new Date(now.setMonth(now.getMonth() + 1));
   const updateData = {
     accountLevel: subscriptionType,
     subscriptionStatus: 'active',
     wordsLimit: wordsLimit,
-    wordsUsed: 0,
-    planExpiryDate: expiryDate.toISOString(),
+    wordsUsed: 0, // 重置已使用的 words 数
+    wordsExpiry: wordsExpiry.toISOString(),
     subscriptionId: subscriptionId,
+    lastWordsResetDate: now.toISOString(),
   };
-
   if (userDoc.exists()) {
     await updateDoc(userRef, updateData);
   } else {
@@ -132,4 +132,20 @@ async function updateUserSubscription(customerId: string, subscriptionType: stri
   }
 
   console.log(`Updated user ${customerId} with subscription ${subscriptionType}`);
+}
+
+async function resetUserWords(userId: string) {
+  const userRef = doc(db, 'users', userId);
+  const userDoc = await getDoc(userRef);
+  
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    if (userData.subscriptionStatus === 'active') {
+      await updateDoc(userRef, {
+        wordsUsed: 0,
+        lastWordsResetDate: new Date().toISOString(),
+      });
+      console.log(`Reset words for user ${userId}`);
+    }
+  }
 }
