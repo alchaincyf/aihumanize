@@ -16,14 +16,6 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-// 扩展 Window 接口
-declare global {
-  interface Window {
-    dataLayer: any[];
-    gtag: (...args: any[]) => void;
-  }
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
