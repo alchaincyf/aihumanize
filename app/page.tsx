@@ -26,8 +26,14 @@ const styles = {
   Shorten: 'Shorten the text, keeping core information.',
 };
 
-export default function HomePage({ params }) {
-  const t = (key) => {
+interface HomePageProps {
+  params: {
+    lang?: string;
+  };
+}
+
+export default function HomePage({ params }: HomePageProps) {
+  const t = (key: string) => {
     const lang = params?.lang || 'en'; // 默认语言为 'en'
     return translations[lang]?.[key] || key; // 如果找不到翻译返回键本身
   };
@@ -86,7 +92,7 @@ export default function HomePage({ params }) {
       </Box>
       <Box sx={{ display: 'flex', gap: 2, mb: 3 }}> {/* 调整 margin-bottom */}
         {Object.keys(styles).map((styleKey) => (
-          <Tooltip key={styleKey} title={styles[styleKey]}>
+          <Tooltip key={styleKey} title={styles[styleKey as keyof typeof styles]}>
             <Box
               onClick={() => setStyle(styleKey)}
               sx={{
@@ -121,7 +127,7 @@ export default function HomePage({ params }) {
         >
           <TextInput
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputText(e.target.value)}
             t={t}
           />
           <Button
