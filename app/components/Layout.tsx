@@ -12,6 +12,7 @@ import {
   CssBaseline,
   ThemeProvider,
   createTheme,
+  PaletteMode,
 } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
@@ -30,7 +31,7 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, params, t }: LayoutProps) {
-  const [mode, setMode] = useState('light');
+  const [mode, setMode] = useState<PaletteMode>('light');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const theme = useTheme();
   const colorMode = {
