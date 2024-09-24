@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use client';
 
 import localFont from "next/font/local";

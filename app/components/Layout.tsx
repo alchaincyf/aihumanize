@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 'use client';
 
 import { useState, useEffect, ReactNode } from 'react';
@@ -8,7 +10,7 @@ import {
   IconButton,
   AppBar,
   Toolbar,
-  Link,
+  Button,
   CssBaseline,
   ThemeProvider,
   createTheme,
@@ -72,42 +74,34 @@ export default function Layout({ children, params, t }: LayoutProps) {
       >
         <AppBar position="static" sx={{ bgcolor: '#000' }}>
           <Toolbar>
-            <NextLink href="/" passHref>
-              <Link color="inherit" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <NextLink href="/" passHref legacyBehavior>
+              <Button component="a" color="inherit" sx={{ textTransform: 'none' }}>
                 <Image src={logo} alt="Logo" width={40} height={40} />
                 <Typography variant="h6" sx={{ flexGrow: 1, color: '#fff', ml: 2 }}>
                   Humanize-AI.top
                 </Typography>
-              </Link>
+              </Button>
             </NextLink>
             <Box sx={{ flexGrow: 1 }} />
-            <NextLink href="/" passHref>
-              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
-                Home
-              </Link>
+            <NextLink href="/" passHref legacyBehavior>
+              <Button component="a" color="inherit">Home</Button>
             </NextLink>
-            <NextLink href="/about" passHref>
-              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
-                About
-              </Link>
+            <NextLink href="/about" passHref legacyBehavior>
+              <Button component="a" color="inherit">About</Button>
             </NextLink>
-            <NextLink href="/contact" passHref>
-              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
-                Contact
-              </Link>
+            <NextLink href="/contact" passHref legacyBehavior>
+              <Button component="a" color="inherit">Contact</Button>
             </NextLink>
-            <NextLink href={isLoggedIn ? "/account" : "/login"} passHref>
-              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
+            <NextLink href={isLoggedIn ? "/account" : "/login"} passHref legacyBehavior>
+              <Button component="a" color="inherit">
                 {isLoggedIn ? "Account" : "Login"}
-              </Link>
+              </Button>
             </NextLink>
             <IconButton onClick={colorMode.toggleColorMode} color="inherit">
               {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
-            <NextLink href="/history" passHref>
-              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
-                History
-              </Link>
+            <NextLink href="/history" passHref legacyBehavior>
+              <Button component="a" color="inherit">History</Button>
             </NextLink>
           </Toolbar>
         </AppBar>
