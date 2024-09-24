@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { auth, db } from '../../firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, DocumentData } from 'firebase/firestore';
 import { Box, Button, Typography } from '@mui/material';
 import Layout from '../components/Layout';
 
@@ -21,14 +21,18 @@ export default function AccountPage() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!auth) return;
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-        if (userDoc.exists()) {
-          setUserData(userDoc.data() as UserData);
-        } else {
-          console.error('No such document!');
+        if (db) {
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (userDoc.exists()) {
+            setUserData(userDoc.data() as UserData);
+          } else {
+            console.error('No such document!');
+          }
         }
       } else {
         router.push('/login');
@@ -39,8 +43,10 @@ export default function AccountPage() {
   }, [router]);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    router.push('/login');
+    if (auth) {
+      await signOut(auth);
+      router.push('/login');
+    }
   };
 
   if (!user || !userData) {
