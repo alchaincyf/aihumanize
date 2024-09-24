@@ -77,8 +77,10 @@ const PricingCard: React.FC<PricingTier> = ({ title, price, paymentLink, feature
   const handleSubscribe = () => {
     if (paymentLink) {
       if (isAuthenticated) {
-        const urlWithUserId = `${paymentLink}&client_reference_id=${auth.currentUser?.uid}`;
-        window.location.href = urlWithUserId;
+        // 使用 URL 对象来正确地添加查询参数
+        const url = new URL(paymentLink);
+        url.searchParams.append('client_reference_id', auth.currentUser?.uid || '');
+        window.location.href = url.toString();
       } else {
         router.push('/login?redirect=pricing');
       }

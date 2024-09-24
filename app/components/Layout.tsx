@@ -86,11 +86,11 @@ export default function Layout({ children, params, t }: LayoutProps) {
             <NextLink href="/" passHref legacyBehavior>
               <Button component="a" color="inherit">Home</Button>
             </NextLink>
-            <NextLink href="/about" passHref legacyBehavior>
-              <Button component="a" color="inherit">About</Button>
+            <NextLink href="/pricing" passHref legacyBehavior>
+              <Button component="a" color="inherit">Pricing</Button>
             </NextLink>
-            <NextLink href="/contact" passHref legacyBehavior>
-              <Button component="a" color="inherit">Contact</Button>
+            <NextLink href="/history" passHref legacyBehavior>
+              <Button component="a" color="inherit">History</Button>
             </NextLink>
             <NextLink href={isLoggedIn ? "/account" : "/login"} passHref legacyBehavior>
               <Button component="a" color="inherit">
@@ -100,12 +100,6 @@ export default function Layout({ children, params, t }: LayoutProps) {
             <IconButton onClick={colorMode.toggleColorMode} color="inherit">
               {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
-            <NextLink href="/history" passHref legacyBehavior>
-              <Button component="a" color="inherit">History</Button>
-            </NextLink>
-            <NextLink href="/pricing" passHref legacyBehavior>
-              <Button component="a" color="inherit">Pricing</Button>
-            </NextLink>
           </Toolbar>
         </AppBar>
         <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>

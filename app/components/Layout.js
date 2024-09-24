@@ -77,27 +77,19 @@ export default function Layout({ children }) {
                 Home
               </Link>
             </NextLink>
-            <NextLink href="/about" passHref>
+            <NextLink href="/Pricing" passHref>
               <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
-                About
+                Pricing
               </Link>
             </NextLink>
-            <NextLink href="/contact" passHref>
-              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
-                Contact
+            <NextLink href="/history" passHref>
+              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
+                History
               </Link>
             </NextLink>
             <NextLink href={isLoggedIn ? "/account" : "/login"} passHref>
               <Link color="inherit" sx={{ mx: 2, color: '#fff' }}> {/* 白色文字 */}
                 {isLoggedIn ? "Account" : "Login"}
-              </Link>
-            </NextLink>
-            <IconButton onClick={colorMode.toggleColorMode} color="inherit">
-              {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
-            <NextLink href="/history" passHref>
-              <Link color="inherit" sx={{ mx: 2, color: '#fff' }}>
-                History
               </Link>
             </NextLink>
           </Toolbar>
