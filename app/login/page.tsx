@@ -28,6 +28,7 @@ export default function LoginPage() {
         await setDoc(doc(db, 'users', user.uid), {
           accountLevel: 'lv0',
           wordsLimit: 5000,
+          wordsUsed: 0, // 设置 wordsUsed 字段为 0
           wordsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
         });
         router.push('/account');
@@ -57,6 +58,7 @@ export default function LoginPage() {
         await setDoc(doc(db, 'users', user.uid), {
           accountLevel: 'lv0',
           wordsLimit: 5000,
+          wordsUsed: 0, // 设置 wordsUsed 字段为 0
           wordsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
         });
       }
