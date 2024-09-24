@@ -1,6 +1,5 @@
 // @ts-nocheck
 
-
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { db } from '../../../firebaseConfig';

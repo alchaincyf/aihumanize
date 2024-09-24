@@ -26,6 +26,7 @@ export default function LoginPage() {
         // 设置新用户的默认等级和 words
         // @ts-ignore
         await setDoc(doc(db, 'users', user.uid), {
+          email: user.email, // 记录用户的邮箱
           accountLevel: 'lv0',
           wordsLimit: 5000,
           wordsUsed: 0, // 设置 wordsUsed 字段为 0
@@ -35,6 +36,14 @@ export default function LoginPage() {
       } else {
         // @ts-ignore
         await signInWithEmailAndPassword(auth, email, password);
+        const user = auth.currentUser;
+        if (user) {
+          // 更新用户的邮箱信息
+          // @ts-ignore
+          await setDoc(doc(db, 'users', user.uid), {
+            email: user.email, // 记录用户的邮箱
+          }, { merge: true });
+        }
         router.push('/account');
       }
     } catch (error) {
@@ -56,11 +65,18 @@ export default function LoginPage() {
         // 设置新用户的默认等级和 words
         // @ts-ignore
         await setDoc(doc(db, 'users', user.uid), {
+          email: user.email, // 记录用户的邮箱
           accountLevel: 'lv0',
           wordsLimit: 5000,
           wordsUsed: 0, // 设置 wordsUsed 字段为 0
           wordsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
         });
+      } else {
+        // 更新用户的邮箱信息
+        // @ts-ignore
+        await setDoc(doc(db, 'users', user.uid), {
+          email: user.email, // 记录用户的邮箱
+        }, { merge: true });
       }
       router.push('/account');
     } catch (error) {
