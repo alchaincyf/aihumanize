@@ -17,6 +17,7 @@ import translations from './translations'; // 确保路径正确
 // @ts-ignore
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useRouter } from 'next/navigation'; // 添加这行
 
 type Translations = {
   [key: string]: {
@@ -42,6 +43,7 @@ interface HomePageProps {
 }
 
 export default function HomePage({ params }: HomePageProps) {
+  const router = useRouter(); // 添加这行
   const t = (key: string) => {
     const lang = params?.lang || 'en';
     return (translations as Translations)[lang]?.[key] || key;
@@ -53,7 +55,6 @@ export default function HomePage({ params }: HomePageProps) {
   const [style, setStyle] = useState('Standard');
 
   const handleHumanize = async () => {
-    if (!inputText.trim()) return;
     setIsLoading(true);
     try {
       const response = await fetch('/api/humanize', {
@@ -61,33 +62,28 @@ export default function HomePage({ params }: HomePageProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ text: inputText, messages, style }),
+        body: JSON.stringify({ 
+          text: inputText, 
+          userId: auth.currentUser?.uid, 
+          style: style, // 修改这里，使用 style 而不是 selectedStyle
+          messages: []
+        }),
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        if (response.status === 401 && errorData.requireLogin) {
+          router.push('/login?redirect=humanize');
+          return;
+        }
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      setMessages(data.messages);
-      setOutputText(data.messages[data.messages.length - 1].content);
-
-      // 保存历史记录
-      // @ts-ignore
-      const user = auth.currentUser;
-      if (user) {
-        // @ts-ignore
-        const historyRef = collection(db, 'users', user.uid, 'history');
-        await addDoc(historyRef, {
-          inputText,
-          outputText: data.messages[data.messages.length - 1].content,
-          style,
-          timestamp: serverTimestamp(),
-        });
-      }
+      setOutputText(data.messages[0].content);
     } catch (error) {
-      console.error('Error:', error);
-      // 可以在这里添加错误处理逻辑，比如显示错误消息给用户
+      console.error('Error in handleHumanize:', error);
+      setOutputText(`Error: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
