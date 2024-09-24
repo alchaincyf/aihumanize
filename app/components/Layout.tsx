@@ -18,8 +18,6 @@ import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import logo from '../../public/logo.svg';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../../firebaseConfig';
 import NextLink from 'next/link';
 
 interface LayoutProps {
@@ -47,6 +45,9 @@ export default function Layout({ children, params, t }: LayoutProps) {
   });
 
   useEffect(() => {
+    const { auth } = require('../../firebaseConfig');
+    const { onAuthStateChanged } = require('firebase/auth');
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
     });
