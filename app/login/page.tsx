@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Box, Button, TextField, Typography, Link } from '@mui/material';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+// @ts-ignore
 import { auth, db } from '../../firebaseConfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
@@ -17,9 +18,11 @@ export default function LoginPage() {
   const handleLogin = async () => {
     try {
       if (isSignUp) {
+        // @ts-ignore
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         // 设置新用户的默认等级和积分
+        // @ts-ignore
         await setDoc(doc(db, 'users', user.uid), {
           accountLevel: 'lv0',
           points: 5000,
@@ -27,6 +30,7 @@ export default function LoginPage() {
         });
         router.push('/account');
       } else {
+        // @ts-ignore
         await signInWithEmailAndPassword(auth, email, password);
         router.push('/account');
       }
@@ -39,12 +43,15 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
+      // @ts-ignore
       const userCredential = await signInWithPopup(auth, provider);
       const user = userCredential.user;
       // 检查用户是否是新用户
+      // @ts-ignore
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (!userDoc.exists()) {
         // 设置新用户的默认等级和积分
+        // @ts-ignore
         await setDoc(doc(db, 'users', user.uid), {
           accountLevel: 'lv0',
           points: 5000,

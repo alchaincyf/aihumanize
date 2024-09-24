@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Typography,
@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import TextInput from './components/TextInput';
 import TextOutput from './components/TextOutput';
 import translations from './translations'; // 确保路径正确
+// @ts-ignore
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -70,8 +71,10 @@ export default function HomePage({ params }: HomePageProps) {
       setOutputText(data.messages[data.messages.length - 1].content);
 
       // 保存历史记录
+      // @ts-ignore
       const user = auth.currentUser;
       if (user) {
+        // @ts-ignore
         const historyRef = collection(db, 'users', user.uid, 'history');
         await addDoc(historyRef, {
           inputText,
