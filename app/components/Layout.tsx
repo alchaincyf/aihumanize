@@ -108,36 +108,94 @@ export default function Layout({ children, params, t }: LayoutProps) {
           {children}
         </Container>
         
-        <Box component="footer" sx={{ py: 4, px: 2, mt: 'auto', bgcolor: '#000', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <NextLink href="/" passHref>
-              <Box component="a" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'white', mb: 2 }}>
-                <Image src={logo} alt="Logo" width={40} height={40} />
-                <Typography variant="h6" sx={{ ml: 2, color: '#fff', fontFamily: 'var(--font-playfair-display)' }}>
-                  Humanize-AI.top
+        <Box component="footer" sx={{ 
+          py: 4, 
+          px: 2, 
+          mt: 'auto', 
+          bgcolor: '#000', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'center'
+        }}>
+          <Container maxWidth="lg">
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', md: 'row' }, 
+              justifyContent: 'space-between',
+              alignItems: { xs: 'center', md: 'flex-start' },
+              gap: { xs: 3, md: 0 }
+            }}>
+              {/* 左侧: 网站图标、名称和 slogan */}
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: { xs: 'center', md: 'flex-start' }
+              }}>
+                <NextLink href="/" passHref>
+                  <Box component="a" sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    textDecoration: 'none', 
+                    color: 'white', 
+                    mb: 1
+                  }}>
+                    <Image src={logo} alt="Logo" width={40} height={40} />
+                    <Typography variant="h6" sx={{ 
+                      ml: 2, 
+                      color: '#fff', 
+                      fontFamily: 'var(--font-playfair-display)'
+                    }}>
+                      Humanize-AI.top
+                    </Typography>
+                  </Box>
+                </NextLink>
+                <Typography variant="body2" color="text.secondary" sx={{ 
+                  color: '#fff', 
+                  fontFamily: 'var(--font-montserrat)', 
+                  textAlign: { xs: 'center', md: 'left' }
+                }}>
+                  Humanize AI: Free Humanize AI Text & AI Humanizer Online
                 </Typography>
               </Box>
-            </NextLink>
-            <Typography variant="body2" color="text.secondary" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)', mb: 1 }}>
-              Humanize AI: Free Humanize AI Text & AI Humanizer Online
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)', mb: 1 }}>
-              Contact: <Link href="mailto:alchaincyf@gmail.com" color="inherit">alchaincyf@gmail.com</Link>
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 2, mb: 2 }}>
-              <Link href="https://www.img2046.com/" target="_blank" rel="noopener noreferrer" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
-                img2046.com
-              </Link>
-              <Link href="https://www.coderwithai.top/" target="_blank" rel="noopener noreferrer" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
-                coderwithai.top
-              </Link>
-              <Link href="https://www.bookai.top/" target="_blank" rel="noopener noreferrer" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
-                bookai.top
-              </Link>
+
+              {/* 右侧: 联系方式、友情链接和版权信息 */}
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: { xs: 'center', md: 'flex-end' },
+                gap: 1
+              }}>
+                <Typography variant="body2" color="text.secondary" sx={{ 
+                  color: '#fff', 
+                  fontFamily: 'var(--font-montserrat)'
+                }}>
+                  Contact: <Link href="mailto:alchaincyf@gmail.com" color="inherit">alchaincyf@gmail.com</Link>
+                </Typography>
+                <Box sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  flexWrap: 'wrap', 
+                  gap: 2
+                }}>
+                  <Link href="https://www.img2046.com/" target="_blank" rel="noopener noreferrer" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
+                    img2046.com
+                  </Link>
+                  <Link href="https://www.coderwithai.top/" target="_blank" rel="noopener noreferrer" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
+                    coderwithai.top
+                  </Link>
+                  <Link href="https://www.bookai.top/" target="_blank" rel="noopener noreferrer" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
+                    bookai.top
+                  </Link>
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ 
+                  color: '#fff', 
+                  fontFamily: 'var(--font-montserrat)',
+                  textAlign: { xs: 'center', md: 'right' }
+                }}>
+                  © 2024 Humanize-AI.top. All rights reserved.
+                </Typography>
+              </Box>
             </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
-              © 2024 Humanize-AI.top. All rights reserved.
-            </Typography>
           </Container>
         </Box>
       </Box>
