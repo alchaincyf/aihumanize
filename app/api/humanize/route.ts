@@ -5,9 +5,7 @@ import { db } from '../../../firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import OpenAI from 'openai';
 
-export const config = {
-  runtime: 'edge',
-};
+export const runtime = 'edge';
 
 const client = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
