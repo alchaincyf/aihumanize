@@ -3,7 +3,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { db } from '../../../firebaseConfig';
-import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, runTransaction } from 'firebase/firestore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -12,30 +12,29 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: Request) {
-  const body = await req.text();
+  const payload = await req.text();
   const sig = req.headers.get('stripe-signature') as string;
 
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
   } catch (err: any) {
-    console.log(`⚠️  Webhook signature verification failed.`, err.message);
+    console.error(`Webhook Error: ${err.message}`);
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  console.log(`Received event: ${event.type}`);
-
+  // 处理事件
   try {
     switch (event.type) {
       case 'checkout.session.completed':
         await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
         break;
-      case 'invoice.payment_succeeded':
-        await handleInvoicePaymentSucceeded(event.data.object as Stripe.Invoice);
+      case 'invoice.paid':
+        await handleInvoicePaid(event.data.object as Stripe.Invoice);
         break;
-      case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
+      case 'invoice.payment_failed':
+        await handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
         break;
       case 'customer.subscription.deleted':
         await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
@@ -44,8 +43,9 @@ export async function POST(req: Request) {
         console.log(`Unhandled event type ${event.type}`);
     }
   } catch (error) {
-    console.error('Error processing event:', error);
-    return NextResponse.json({ error: 'Error processing event' }, { status: 500 });
+    console.error(`Error processing event ${event.type}:`, error);
+    // 不要返回错误响应，而是返回 200 OK
+    // Stripe 会重试失败的 webhook，所以我们需要在内部处理错误
   }
 
   return NextResponse.json({ received: true });
@@ -53,101 +53,140 @@ export async function POST(req: Request) {
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   const customerId = session.client_reference_id;
-  const subscriptionId = session.subscription as string;
-
   if (!customerId) {
     console.error('No customer ID found in session');
-    throw new Error('No customer ID found');
+    return;
   }
 
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  const { subscriptionType, wordsLimit } = getSubscriptionDetails(subscription);
+  await runTransaction(db, async (transaction) => {
+    const userRef = doc(db, 'users', customerId);
+    const userDoc = await transaction.get(userRef);
 
-  await updateUserSubscription(customerId, subscriptionType, wordsLimit, subscriptionId);
+    if (!userDoc.exists()) {
+      throw new Error(`User ${customerId} not found`);
+    }
+
+    const userData = userDoc.data();
+    if (userData.subscriptionStatus === 'active') {
+      console.log(`User ${customerId} already has an active subscription`);
+      return;
+    }
+
+    const subscriptionDetails = await getSubscriptionDetails(session.subscription as string);
+    
+    transaction.update(userRef, {
+      accountLevel: subscriptionDetails.subscriptionType,
+      subscriptionStatus: 'active',
+      wordsLimit: subscriptionDetails.wordsLimit,
+      wordsUsed: 0,
+      subscriptionId: subscriptionDetails.subscriptionId,
+      wordsExpiry: subscriptionDetails.wordsExpiry,
+      lastWordsResetDate: new Date().toISOString(),
+    });
+  });
+
+  console.log(`Updated subscription for user ${customerId}`);
 }
 
-async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
-  const subscriptionId = invoice.subscription as string;
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  const customerId = subscription.customer as string;
-
-  const { subscriptionType, wordsLimit } = getSubscriptionDetails(subscription);
-
-  await updateUserSubscription(customerId, subscriptionType, wordsLimit, subscriptionId);
+async function handleInvoicePaid(invoice: Stripe.Invoice) {
+  const customerId = invoice.customer as string;
+  await resetUserWords(customerId);
+  console.log(`Reset words for user ${customerId} after successful payment`);
 }
 
-async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
-  const customerId = subscription.customer as string;
-  const { subscriptionType, wordsLimit } = getSubscriptionDetails(subscription);
-  await updateUserSubscription(customerId, subscriptionType, wordsLimit, subscription.id);
+async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
+  const customerId = invoice.customer as string;
+  const userRef = doc(db, 'users', customerId);
+
+  await runTransaction(db, async (transaction) => {
+    const userDoc = await transaction.get(userRef);
+    if (!userDoc.exists()) {
+      console.error(`User ${customerId} not found`);
+      return;
+    }
+
+    const userData = userDoc.data();
+    if (userData.subscriptionStatus !== 'active') {
+      console.log(`User ${customerId} subscription is already inactive`);
+      return;
+    }
+
+    transaction.update(userRef, {
+      subscriptionStatus: 'past_due',
+    });
+  });
+
+  console.log(`Updated subscription status to past_due for user ${customerId}`);
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string;
   const userRef = doc(db, 'users', customerId);
-  await updateDoc(userRef, {
-    accountLevel: 'free',
-    subscriptionStatus: 'inactive',
-    wordsLimit: 5000, // 免费计划的限制
-    wordsUsed: 0,
-    subscriptionId: null,
-    wordsExpiry: null,
+
+  await runTransaction(db, async (transaction) => {
+    const userDoc = await transaction.get(userRef);
+    if (!userDoc.exists()) {
+      console.error(`User ${customerId} not found`);
+      return;
+    }
+
+    transaction.update(userRef, {
+      accountLevel: 'free',
+      subscriptionStatus: 'inactive',
+      wordsLimit: 5000, // 免费计划的限制
+      wordsUsed: 0,
+      subscriptionId: null,
+      wordsExpiry: null,
+    });
   });
+
   console.log(`Subscription cancelled for user ${customerId}`);
 }
 
-function getSubscriptionDetails(subscription: Stripe.Subscription) {
+async function getSubscriptionDetails(subscriptionId: string) {
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const priceId = subscription.items.data[0].price.id;
   let subscriptionType, wordsLimit;
 
-  if (priceId === 'price_1Q2OZ6Bpt9GS2xZNPErDm4eE') { // Pro Max plan
+  if (priceId === process.env.STRIPE_PRICE_ID_PROMAX) {
     subscriptionType = 'promax';
     wordsLimit = 250000;
-  } else if (priceId === 'price_pro') { // Pro plan
+  } else if (priceId === process.env.STRIPE_PRICE_ID_PRO) {
     subscriptionType = 'pro';
     wordsLimit = 50000;
   } else {
     throw new Error('Invalid subscription type');
   }
 
-  return { subscriptionType, wordsLimit };
-}
-
-async function updateUserSubscription(customerId: string, subscriptionType: string, wordsLimit: number, subscriptionId: string) {
-  const userRef = doc(db, 'users', customerId);
-  const userDoc = await getDoc(userRef);
   const now = new Date();
-  const wordsExpiry = new Date(now.setMonth(now.getMonth() + 1));
-  const updateData = {
-    accountLevel: subscriptionType,
-    subscriptionStatus: 'active',
-    wordsLimit: wordsLimit,
-    wordsUsed: 0, // 重置已使用的 words 数
-    wordsExpiry: wordsExpiry.toISOString(),
-    subscriptionId: subscriptionId,
-    lastWordsResetDate: now.toISOString(),
-  };
-  if (userDoc.exists()) {
-    await updateDoc(userRef, updateData);
-  } else {
-    await setDoc(userRef, updateData);
-  }
+  const wordsExpiry = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
-  console.log(`Updated user ${customerId} with subscription ${subscriptionType}`);
+  return {
+    subscriptionType,
+    wordsLimit,
+    wordsExpiry: wordsExpiry.toISOString(),
+    subscriptionId,
+  };
 }
 
 async function resetUserWords(userId: string) {
   const userRef = doc(db, 'users', userId);
-  const userDoc = await getDoc(userRef);
   
-  if (userDoc.exists()) {
+  await runTransaction(db, async (transaction) => {
+    const userDoc = await transaction.get(userRef);
+    if (!userDoc.exists()) {
+      console.error(`User ${userId} not found`);
+      return;
+    }
+
     const userData = userDoc.data();
     if (userData.subscriptionStatus === 'active') {
-      await updateDoc(userRef, {
+      transaction.update(userRef, {
         wordsUsed: 0,
         lastWordsResetDate: new Date().toISOString(),
       });
-      console.log(`Reset words for user ${userId}`);
     }
-  }
+  });
+
+  console.log(`Reset words for user ${userId}`);
 }
