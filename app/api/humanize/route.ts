@@ -5,6 +5,10 @@ import { db } from '../../../firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import OpenAI from 'openai';
 
+export const config = {
+  runtime: 'edge',
+};
+
 const client = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
   baseURL: "https://api.deepseek.com/v1"
@@ -155,10 +159,13 @@ const styles = {
 
   Ensure that after the transformation, only the revised content is returned without any additional explanations. Respond in the language used by the user.
   `,
-}; // <-- 这里添加了右花括号
+};
 
 export async function POST(request: Request) {
   try {
+    if (!process.env.DEEPSEEK_API_KEY) {
+      throw new Error('DEEPSEEK_API_KEY is not set');
+    }
     const { text, userId, style, messages } = await request.json();
     console.log('Received request:', { text, userId, style });
 
@@ -191,7 +198,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Word limit exceeded' }, { status: 403 });
     }
 
-    const aiResponse = await processAIRequest(text, style, messages);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 50000); // 50 seconds timeout
+
+    const aiResponse = await processAIRequest(text, style, messages, controller.signal);
+
+    clearTimeout(timeoutId);
 
     const newWordsUsed = userData.wordsUsed + wordCount;
     console.log('Updating wordsUsed:', { userId, newWordsUsed });
@@ -202,12 +214,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ messages: [aiResponse] }, {
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*', // 或者指定允许的域名
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
       },
     });
   } catch (error) {
+    if (error.name === 'AbortError') {
+      return NextResponse.json({ error: 'Request timed out. Please try again.' }, { status: 504 });
+    }
     console.error('Detailed error in /api/humanize:', error);
-    console.error('Request body:', await request.text());
-    console.error('Environment variables:', process.env);
+    console.error('Request headers:', Object.fromEntries(request.headers));
+    console.error('Request method:', request.method);
+    console.error('Request URL:', request.url);
+    
+    // 安全地记录请求体
+    try {
+      const clonedRequest = request.clone();
+      const body = await clonedRequest.text();
+      console.error('Request body:', body);
+    } catch (bodyError) {
+      console.error('Error reading request body:', bodyError);
+    }
+
     // 注意：不要在生产环境中记录敏感信息
     return NextResponse.json({ error: 'Internal server error', details: error.message }, { 
       status: 500,
@@ -231,7 +260,7 @@ export async function OPTIONS() {
   );
 }
 
-async function processAIRequest(text: string, style: string, messages: any[]) {
+async function processAIRequest(text: string, style: string, messages: any[], signal: AbortSignal) {
   try {
     const systemMessage = {
       role: 'system',
@@ -245,28 +274,23 @@ async function processAIRequest(text: string, style: string, messages: any[]) {
     const response = await client.chat.completions.create({
       model: "deepseek-chat",
       messages: updatedMessages,
+      signal: signal,
     });
 
     console.log('Received response from DeepSeek API:', response);
 
     const aiResponse = response.choices[0].message;
 
-    return NextResponse.json({ messages: [aiResponse] }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return { messages: [aiResponse] };
   } catch (error) {
     console.error('Error in processAIRequest:', error);
 
-    // Check if the error is a timeout
     if (error.message.includes('timeout')) {
-      return NextResponse.json({ error: 'Request timed out. Please try again later.' }, { status: 504 });
+      throw new Error('Request timed out. Please try again later.');
     }
 
-    // Check if the response is not JSON
     if (error.message.includes('Unexpected token')) {
-      return NextResponse.json({ error: 'Invalid response from AI service. Please try again later.' }, { status: 502 });
+      throw new Error('Invalid response from AI service. Please try again later.');
     }
 
     throw error;
