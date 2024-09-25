@@ -77,7 +77,7 @@ export default function HomePage({ params }: HomePageProps) {
         body: JSON.stringify({ 
           text: inputText, 
           userId: auth.currentUser?.uid, 
-          style: style, // 修改这里，使用 style 而不是 selectedStyle
+          style: style,
           messages: []
         }),
       });
@@ -92,7 +92,20 @@ export default function HomePage({ params }: HomePageProps) {
       }
 
       const data = await response.json();
-      setOutputText(data.messages[0].content);
+      const outputText = data.messages[0].content;
+      setOutputText(outputText);
+
+      // 保存历史记录
+      if (auth.currentUser) {
+        const historyRef = collection(db, 'users', auth.currentUser.uid, 'history');
+        await addDoc(historyRef, {
+          inputText,
+          outputText,
+          style,
+          inputWordCount: inputText.split(/\s+/).length,
+          timestamp: serverTimestamp(),
+        });
+      }
     } catch (error) {
       console.error('Error in handleHumanize:', error);
       setOutputText(`Error: ${error.message}`);

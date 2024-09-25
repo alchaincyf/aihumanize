@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db } from '../../firebaseConfig';
 import { collection, query, orderBy, getDocs, Timestamp } from 'firebase/firestore';
-import { Box, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Box, Typography, List, ListItem, ListItemText, Divider, Paper } from '@mui/material';
 import Layout from '../components/Layout';
 
 interface HistoryItem {
@@ -16,6 +16,7 @@ interface HistoryItem {
   outputText: string;
   timestamp: Timestamp;
   style: string;
+  inputWordCount: number;
 }
 
 export default function HistoryPage() {
@@ -54,28 +55,29 @@ export default function HistoryPage() {
   return (
     <Layout>
       <Box sx={{ maxWidth: 800, margin: 'auto', mt: 4 }}>
-        <Typography variant="h4" sx={{ mb: 2 }}>Your History</Typography>
+        <Typography variant="h4" sx={{ mb: 2, fontFamily: 'var(--font-playfair-display)' }}>Your History</Typography>
         <List>
           {historyItems.map((item, index) => (
             <Fragment key={item.id}>
               {index > 0 && <Divider />}
               <ListItem alignItems="flex-start">
-                <ListItemText
-                  primary={`Style: ${item.style}`}
-                  secondary={
-                    <>
-                      <Typography component="div" variant="body2" color="text.primary">
-                        Input: {item.inputText}
-                      </Typography>
-                      <Typography component="div" variant="body2" color="text.primary">
-                        Output: {item.outputText}
-                      </Typography>
-                      <Typography component="div" variant="body2">
-                        Date: {item.timestamp.toDate().toLocaleString()}
-                      </Typography>
-                    </>
-                  }
-                />
+                <Paper elevation={3} sx={{ p: 2, width: '100%' }}>
+                  <Typography variant="h6" sx={{ mb: 1, fontFamily: 'var(--font-montserrat)' }}>
+                    Style: {item.style}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mb: 1, fontFamily: 'var(--font-roboto)' }}>
+                    Input Word Count: {item.inputWordCount}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mb: 1, fontFamily: 'var(--font-roboto)' }}>
+                    Date: {item.timestamp.toDate().toLocaleString()}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mb: 1, fontFamily: 'var(--font-roboto)' }}>
+                    Input: {item.inputText}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontFamily: 'var(--font-roboto)' }}>
+                    Output: {item.outputText}
+                  </Typography>
+                </Paper>
               </ListItem>
             </Fragment>
           ))}

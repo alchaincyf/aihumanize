@@ -1,18 +1,16 @@
-// @ts-nocheck
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { auth, db } from '../../firebaseConfig';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { Box, Button, Typography, CircularProgress } from '@mui/material';
+import { auth, db } from '../../firebaseConfig';
+import { Box, Typography, Paper, Container, Button, Divider, CircularProgress } from '@mui/material';
 import Layout from '../components/Layout';
 
 interface UserData {
+  email: string;
   accountLevel: string;
-  subscriptionStatus: string;
   wordsLimit: number;
   wordsUsed: number;
   wordsExpiry: string;
@@ -42,7 +40,7 @@ export default function AccountPage() {
   }, [router]);
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await auth.signOut();
     router.push('/login');
   };
 
@@ -56,22 +54,46 @@ export default function AccountPage() {
     );
   }
 
-  if (!user || !userData) {
-    return <Typography>No user data available.</Typography>;
-  }
-
   return (
     <Layout>
-      <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4, p: 3 }}>
-        <Typography variant="h4" gutterBottom>Account Information</Typography>
-        <Typography variant="body1">Email: {user.email}</Typography>
-        <Typography variant="body1">Account Level: {userData.accountLevel || 'Free'}</Typography>
-        <Typography variant="body1">Subscription Status: {userData.subscriptionStatus || 'Inactive'}</Typography>
-        <Typography variant="body1">Words Limit: {userData.wordsLimit || 'N/A'}</Typography>
-        <Typography variant="body1">Words Used: {userData.wordsUsed || 0}</Typography>
-        <Typography variant="body1">Words Expiry: {userData.wordsExpiry ? new Date(userData.wordsExpiry).toLocaleDateString() : 'N/A'}</Typography>
-        <Button variant="contained" color="primary" onClick={handleLogout} sx={{ mt: 2 }}>Logout</Button>
-      </Box>
+      <Container maxWidth="md">
+        <Paper elevation={3} sx={{ mt: 8, p: 4 }}>
+          <Typography variant="h4" gutterBottom sx={{ fontFamily: 'var(--font-playfair-display)' }}>
+            Account Information
+          </Typography>
+          <Divider sx={{ mb: 3 }} />
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontFamily: 'var(--font-montserrat)' }}>Email</Typography>
+            <Typography>{userData?.email}</Typography>
+          </Box>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontFamily: 'var(--font-montserrat)' }}>Account Level</Typography>
+            <Typography>{userData?.accountLevel || 'Free'}</Typography>
+          </Box>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontFamily: 'var(--font-montserrat)' }}>Words Limit</Typography>
+            <Typography>{userData?.wordsLimit || 'N/A'}</Typography>
+          </Box>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontFamily: 'var(--font-montserrat)' }}>Words Used</Typography>
+            <Typography>{userData?.wordsUsed || 0}</Typography>
+          </Box>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontFamily: 'var(--font-montserrat)' }}>Words Expiry</Typography>
+            <Typography>
+              {userData?.wordsExpiry ? new Date(userData.wordsExpiry).toLocaleDateString() : 'N/A'}
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleLogout}
+            sx={{ mt: 2, fontFamily: 'var(--font-montserrat)' }}
+          >
+            Logout
+          </Button>
+        </Paper>
+      </Container>
     </Layout>
   );
 }

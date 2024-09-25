@@ -1,138 +1,102 @@
-// @ts-nocheck
-
 'use client';
 
 import { useState } from 'react';
-import { Box, Button, TextField, Typography, Link } from '@mui/material';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-// @ts-ignore
-import { auth, db } from '../../firebaseConfig';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
+import { Box, Button, TextField, Typography, Paper, Container, Divider } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
 import Layout from '../components/Layout';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      if (isSignUp) {
-        // @ts-ignore
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        // 设置新用户的默认等级和 words
-        // @ts-ignore
-        await setDoc(doc(db, 'users', user.uid), {
-          email: user.email, // 记录用户的邮箱
-          accountLevel: 'lv0',
-          wordsLimit: 5000,
-          wordsUsed: 0, // 设置 wordsUsed 字段为 0
-          wordsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
-        });
-        router.push('/account');
-      } else {
-        // @ts-ignore
-        await signInWithEmailAndPassword(auth, email, password);
-        const user = auth.currentUser;
-        if (user) {
-          // 更新用户的邮箱信息
-          // @ts-ignore
-          await setDoc(doc(db, 'users', user.uid), {
-            email: user.email, // 记录用户的邮箱
-          }, { merge: true });
-        }
-        router.push('/account');
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push('/account');
     } catch (error) {
-      console.error('Error:', error);
-      // 可以在这里添加错误处理逻辑，比如显示错误消息给用户
+      setError('Failed to log in. Please check your credentials.');
     }
   };
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      // @ts-ignore
-      const userCredential = await signInWithPopup(auth, provider);
-      const user = userCredential.user;
-      // 检查用户是否是新用户
-      // @ts-ignore
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) {
-        // 设置新用户的默认等级和 words
-        // @ts-ignore
-        await setDoc(doc(db, 'users', user.uid), {
-          email: user.email, // 记录用户的邮箱
-          accountLevel: 'lv0',
-          wordsLimit: 5000,
-          wordsUsed: 0, // 设置 wordsUsed 字段为 0
-          wordsExpiry: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30天有效期
-        });
-      } else {
-        // 更新用户的邮箱信息
-        // @ts-ignore
-        await setDoc(doc(db, 'users', user.uid), {
-          email: user.email, // 记录用户的邮箱
-        }, { merge: true });
-      }
+      await signInWithPopup(auth, provider);
       router.push('/account');
     } catch (error) {
-      console.error('Error:', error);
-      // 可以在这里添加错误处理逻辑，比如显示错误消息给用户
+      setError('Failed to log in with Google. Please try again.');
     }
   };
 
   return (
     <Layout>
-      <Box sx={{ textAlign: 'center', mt: 5 }}>
-        <Typography variant="h4">{isSignUp ? 'Sign Up' : 'Login'}</Typography>
-        <Box sx={{ mt: 3 }}>
-          <TextField
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth
-            sx={{ mb: 2 }}
-          />
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ mt: 8, p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Typography component="h1" variant="h4" sx={{ mb: 3, fontFamily: 'var(--font-playfair-display)' }}>
+            Log In
+          </Typography>
+          <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, mb: 2, fontFamily: 'var(--font-montserrat)' }}
+            >
+              Log In
+            </Button>
+          </Box>
+          <Divider sx={{ width: '100%', my: 2 }}>or</Divider>
           <Button
-            variant="contained"
-            color="primary"
-            onClick={handleLogin}
             fullWidth
-            sx={{ mb: 2 }}
-          >
-            {isSignUp ? 'Sign Up' : 'Login'}
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
+            variant="outlined"
+            startIcon={<GoogleIcon />}
             onClick={handleGoogleLogin}
-            fullWidth
-            sx={{ mb: 2 }}
+            sx={{ mt: 1, mb: 2, fontFamily: 'var(--font-montserrat)' }}
           >
-            Login with Google
+            Log in with Google
           </Button>
-          <Link
-            component="button"
-            variant="body2"
-            onClick={() => setIsSignUp(!isSignUp)}
-          >
-            {isSignUp ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
-          </Link>
-        </Box>
-      </Box>
+          {error && (
+            <Typography color="error" sx={{ mt: 2 }}>
+              {error}
+            </Typography>
+          )}
+        </Paper>
+      </Container>
     </Layout>
   );
 }
