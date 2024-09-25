@@ -33,18 +33,12 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, params, t }: LayoutProps) {
-  const [mode, setMode] = useState<PaletteMode>('light');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const theme = useTheme();
-  const colorMode = {
-    toggleColorMode: () => {
-      setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-    },
-  };
 
+  // 移除 mode 和 colorMode 相关的代码
   const themeConfig = createTheme({
     palette: {
-      mode,
+      mode: 'light', // 固定为亮色模式
     },
   });
 
@@ -85,9 +79,6 @@ export default function Layout({ children, params, t }: LayoutProps) {
               </Button>
             </NextLink>
             <Box sx={{ flexGrow: 1 }} />
-            <NextLink href="/" passHref legacyBehavior>
-              <Button component="a" color="inherit">Home</Button>
-            </NextLink>
             <NextLink href="/pricing" passHref legacyBehavior>
               <Button component="a" color="inherit">Pricing</Button>
             </NextLink>
@@ -99,9 +90,7 @@ export default function Layout({ children, params, t }: LayoutProps) {
                 {isLoggedIn ? "Account" : "Login"}
               </Button>
             </NextLink>
-            <IconButton onClick={colorMode.toggleColorMode} color="inherit">
-              {theme.palette.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
+            {/* 移除黑夜模式切换按钮 */}
           </Toolbar>
         </AppBar>
         <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
