@@ -17,16 +17,15 @@ interface PricingTier {
   buttonText: string;
   isPopular?: boolean;
 }
-
 const pricingTiers: PricingTier[] = [
   {
     title: "Free",
     price: "$0 / mo.",
     paymentLink: "",
     features: [
-      "5 humanizations per day",
-      "Basic humanization styles",
-      "No advanced features",
+      "5,000 words / mo.",
+      "Basic modes and settings",
+      "Limited words per process",
       "Community support"
     ],
     buttonText: "Get Started"
@@ -36,10 +35,11 @@ const pricingTiers: PricingTier[] = [
     price: "$9.99 / mo.",
     paymentLink: "https://buy.stripe.com/7sIeXtbHfdTBgqAfYY",
     features: [
-      "50 humanizations per day",
-      "All humanization styles",
+      "50,000 words / mo.",
+      "ALL modes and settings",
+      "Re-paraphrasing is free",
+      "Unlimited words per process",
       "Priority processing",
-      "Basic API access",
       "Email support"
     ],
     buttonText: "Choose Pro",
@@ -50,11 +50,14 @@ const pricingTiers: PricingTier[] = [
     price: "$29.99 / mo.",
     paymentLink: "https://buy.stripe.com/fZebLhh1zeXFgqA7st",
     features: [
-      "Unlimited humanizations",
-      "All current and future features",
-      "Highest priority processing",
-      "Full API access",
-      "Dedicated support"
+      "Unlimited words",
+      "ALL modes and settings",
+      "Re-paraphrasing is free",
+      "Unlimited words per process",
+      "Continuous improvements",
+      "Undetectable by all AIs",
+      "No weird or random words",
+      "Dedicated customer support"
     ],
     buttonText: "Choose Pro Max"
   }
@@ -97,16 +100,16 @@ export default function PricingPage() {
           {pricingTiers.map((tier) => (
             <Grid item xs={12} md={4} key={tier.title}>
               <Paper elevation={3} sx={{ padding: 3 }}>
-                <Typography variant="h5" align="center" gutterBottom>
+                <Typography variant="h5" align="left" gutterBottom sx={{ fontFamily: "'Playfair Display', serif", fontWeight: 700 }}>
                   {tier.title}
                 </Typography>
-                <Typography variant="h6" align="center" gutterBottom>
+                <Typography variant="h6" align="left" gutterBottom sx={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}>
                   {tier.price}
                 </Typography>
-                <ul>
+                <ul style={{ listStyleType: 'none', padding: 0 }}>
                   {tier.features.map((feature, index) => (
-                    <Typography component="li" key={index} align="center">
-                      {feature}
+                    <Typography component="li" key={index} align="left" sx={{ fontFamily: "'Roboto', sans-serif", fontSize: '0.9rem', marginBottom: '0.5rem' }}>
+                      • {feature}
                     </Typography>
                   ))}
                 </ul>
@@ -115,7 +118,7 @@ export default function PricingPage() {
                   color="primary"
                   fullWidth
                   onClick={() => handleSubscribe(tier.paymentLink)}
-                  sx={{ mt: 2 }}
+                  sx={{ mt: 2, fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }}
                 >
                   {tier.buttonText}
                 </Button>
@@ -124,7 +127,7 @@ export default function PricingPage() {
                     label="Most Popular"
                     color="secondary"
                     icon={<CheckIcon />}
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 2, fontFamily: "'Montserrat', sans-serif" }}
                   />
                 )}
               </Paper>

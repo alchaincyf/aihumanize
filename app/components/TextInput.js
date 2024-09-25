@@ -36,6 +36,7 @@ export default function TextInput({ value, onChange, t }) {
             lineHeight: '1.5', // 设置行高
             padding: '16px', // 设置内边距
             fontSize: isMobile ? '0.9rem' : '1rem',
+            fontFamily: 'var(--font-roboto)',
           },
           height: '100%',
         }}
@@ -48,6 +49,7 @@ export default function TextInput({ value, onChange, t }) {
           left: 16, 
           color: 'text.secondary',
           fontSize: isMobile ? '0.7rem' : '0.8rem',
+          fontFamily: 'var(--font-montserrat)',
         }}
       >
         {wordCount} words

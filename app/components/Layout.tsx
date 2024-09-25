@@ -70,6 +70,7 @@ export default function Layout({ children, params, t }: LayoutProps) {
           color: 'text.primary',
           background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
           backgroundAttachment: 'fixed',
+          fontFamily: 'var(--font-roboto)',
         }}
       >
         <AppBar position="static" sx={{ bgcolor: '#000' }}>
@@ -77,7 +78,7 @@ export default function Layout({ children, params, t }: LayoutProps) {
             <NextLink href="/" passHref legacyBehavior>
               <Button component="a" color="inherit" sx={{ textTransform: 'none' }}>
                 <Image src={logo} alt="Logo" width={40} height={40} />
-                <Typography variant="h6" sx={{ flexGrow: 1, color: '#fff', ml: 2 }}>
+                <Typography variant="h6" sx={{ flexGrow: 1, color: '#fff', ml: 2, fontFamily: 'var(--font-playfair-display)' }}>
                   Humanize-AI.top
                 </Typography>
               </Button>
@@ -111,12 +112,12 @@ export default function Layout({ children, params, t }: LayoutProps) {
             <NextLink href="/" passHref>
               <Box component="a" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'white' }}>
                 <Image src={logo} alt="Logo" width={40} height={40} />
-                <Typography variant="h6" sx={{ ml: 2, color: '#fff' }}>
+                <Typography variant="h6" sx={{ ml: 2, color: '#fff', fontFamily: 'var(--font-playfair-display)' }}>
                   Humanize-AI.top
                 </Typography>
               </Box>
             </NextLink>
-            <Typography variant="body2" color="text.secondary" sx={{ color: '#fff' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
               © 2024 Humanize-AI.top. All rights reserved.
             </Typography>
           </Container>

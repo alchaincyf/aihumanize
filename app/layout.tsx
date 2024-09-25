@@ -1,4 +1,24 @@
 import { Metadata } from 'next'
+import { Playfair_Display, Montserrat, Roboto } from 'next/font/google'
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair-display',
+})
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-montserrat',
+})
+
+const roboto = Roboto({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-roboto',
+})
 
 export const metadata: Metadata = {
   title: 'Humanize AI Text | AI Text Humanizer Tool',
@@ -33,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${playfairDisplay.variable} ${montserrat.variable} ${roboto.variable}`}>
       <body>{children}</body>
     </html>
   )

@@ -109,8 +109,10 @@ export default function HomePage({ params }: HomePageProps) {
     <>
       <Layout params={params} t={t}>
         <Box sx={{ textAlign: 'center', mb: isMobile ? 2 : 3 }}>
-          <Typography variant={isMobile ? "h4" : "h2"}>Humanize AI Text</Typography>
-          <Typography variant={isMobile ? "body1" : "h6"} color="text.secondary" fontWeight="light">
+          <Typography variant={isMobile ? "h4" : "h2"} sx={{ fontFamily: 'var(--font-playfair-display)', fontWeight: 700 }}>
+            Humanize AI Text
+          </Typography>
+          <Typography variant={isMobile ? "body1" : "h6"} color="text.secondary" sx={{ fontFamily: 'var(--font-montserrat)', fontWeight: 400 }}>
             Effortlessly convert AI-generated text from ChatGPT, Bard, Jasper, Grammarly, GPT4, and more into natural, human-like writing. Achieve 100% originality and bypass AI detection with the best Humanize AI tool.
           </Typography>
         </Box>
@@ -129,6 +131,8 @@ export default function HomePage({ params }: HomePageProps) {
                     backgroundColor: style === styleKey ? '#1565c0' : '#f0f0f0',
                   },
                   fontSize: isMobile ? '0.8rem' : '1rem',
+                  fontFamily: 'var(--font-roboto)',
+                  fontWeight: 400,
                 }}
               >
                 {styleKey}

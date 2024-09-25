@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, TextField, Typography, IconButton, Tooltip } from '@mui/material';
+import { Box, TextField, Typography, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
 import Image from 'next/image';
 
@@ -49,26 +49,38 @@ export default function TextOutput({ value, isLoading }) {
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
-                border: 'none', // 去掉边框
+                border: 'none',
               },
-              lineHeight: '1.5', // 设置行高
-              padding: '16px', // 设置内边距
+              lineHeight: '1.5',
+              padding: '16px',
+              fontFamily: 'var(--font-roboto)',
             },
             height: '100%',
-            overflow: 'auto', // 支持滚动
+            overflow: 'auto',
           }}
         />
       )}
       <Typography
         variant="body2"
-        sx={{ position: 'absolute', bottom: 2, left: 16, color: 'text.secondary' }}
+        sx={{ 
+          position: 'absolute', 
+          bottom: 2, 
+          left: 16, 
+          color: 'text.secondary',
+          fontFamily: 'var(--font-montserrat)',
+        }}
       >
         {wordCount} words
       </Typography>
       <Tooltip title={copySuccess ? "Copied!" : "Copy"}>
         <IconButton
           onClick={handleCopy}
-          sx={{ position: 'absolute', bottom: 0, right: 0 }}
+          sx={{ 
+            position: 'absolute', 
+            bottom: 0, 
+            right: 0,
+            fontFamily: 'var(--font-roboto)',
+          }}
         >
           <ContentCopy />
         </IconButton>
