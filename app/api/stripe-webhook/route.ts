@@ -3,7 +3,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { db } from '../../../firebaseConfig';
-import { doc, getDoc, updateDoc, runTransaction } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, runTransaction, setDoc } from 'firebase/firestore';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -24,7 +24,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  // 处理事件
+  console.log(`Received event: ${event.type}`);
+
   try {
     switch (event.type) {
       case 'checkout.session.completed':
@@ -44,48 +45,68 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error(`Error processing event ${event.type}:`, error);
-    // 不要返回错误响应，而是返回 200 OK
-    // Stripe 会重试失败的 webhook，所以我们需要在内部处理错误
+    // 返回 200 OK 以防止 Stripe 重试
+    return NextResponse.json({ received: true, error: 'Error processing event' });
   }
 
   return NextResponse.json({ received: true });
 }
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-  const customerId = session.client_reference_id;
+  console.log('Processing checkout.session.completed');
+  const customerId = session.customer as string;
+  const subscriptionId = session.subscription as string;
+
   if (!customerId) {
     console.error('No customer ID found in session');
     return;
   }
 
-  await runTransaction(db, async (transaction) => {
-    const userRef = doc(db, 'users', customerId);
-    const userDoc = await transaction.get(userRef);
+  try {
+    await runTransaction(db, async (transaction) => {
+      const userRef = doc(db, 'users', customerId);
+      const userDoc = await transaction.get(userRef);
 
-    if (!userDoc.exists()) {
-      throw new Error(`User ${customerId} not found`);
-    }
+      if (!userDoc.exists()) {
+        console.log(`Creating new user document for ${customerId}`);
+        const subscriptionDetails = await getSubscriptionDetails(subscriptionId);
+        await setDoc(userRef, {
+          email: session.customer_details?.email,
+          accountLevel: subscriptionDetails.subscriptionType,
+          subscriptionStatus: 'active',
+          wordsLimit: subscriptionDetails.wordsLimit,
+          wordsUsed: 0,
+          subscriptionId: subscriptionId,
+          wordsExpiry: subscriptionDetails.wordsExpiry,
+          lastWordsResetDate: new Date().toISOString(),
+        });
+      } else {
+        console.log(`Updating existing user document for ${customerId}`);
+        const userData = userDoc.data();
+        if (userData.subscriptionStatus === 'active') {
+          console.log(`User ${customerId} already has an active subscription`);
+          return;
+        }
 
-    const userData = userDoc.data();
-    if (userData.subscriptionStatus === 'active') {
-      console.log(`User ${customerId} already has an active subscription`);
-      return;
-    }
-
-    const subscriptionDetails = await getSubscriptionDetails(session.subscription as string);
-    
-    transaction.update(userRef, {
-      accountLevel: subscriptionDetails.subscriptionType,
-      subscriptionStatus: 'active',
-      wordsLimit: subscriptionDetails.wordsLimit,
-      wordsUsed: 0,
-      subscriptionId: subscriptionDetails.subscriptionId,
-      wordsExpiry: subscriptionDetails.wordsExpiry,
-      lastWordsResetDate: new Date().toISOString(),
+        const subscriptionDetails = await getSubscriptionDetails(subscriptionId);
+        
+        transaction.update(userRef, {
+          accountLevel: subscriptionDetails.subscriptionType,
+          subscriptionStatus: 'active',
+          wordsLimit: subscriptionDetails.wordsLimit,
+          wordsUsed: 0,
+          subscriptionId: subscriptionId,
+          wordsExpiry: subscriptionDetails.wordsExpiry,
+          lastWordsResetDate: new Date().toISOString(),
+        });
+      }
     });
-  });
 
-  console.log(`Updated subscription for user ${customerId}`);
+    console.log(`Updated subscription for user ${customerId}`);
+  } catch (error) {
+    console.error(`Error updating user ${customerId}:`, error);
+    throw error; // 重新抛出错误以便上层捕获
+  }
 }
 
 async function handleInvoicePaid(invoice: Stripe.Invoice) {
@@ -144,6 +165,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 }
 
 async function getSubscriptionDetails(subscriptionId: string) {
+  console.log(`Fetching subscription details for ${subscriptionId}`);
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const priceId = subscription.items.data[0].price.id;
   let subscriptionType, wordsLimit;
@@ -160,6 +182,8 @@ async function getSubscriptionDetails(subscriptionId: string) {
 
   const now = new Date();
   const wordsExpiry = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
+  console.log(`Subscription details: type=${subscriptionType}, limit=${wordsLimit}`);
 
   return {
     subscriptionType,
