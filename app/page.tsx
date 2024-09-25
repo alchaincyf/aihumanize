@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Button,
   Tooltip,
+  useMediaQuery,
 } from '@mui/material';
 import Layout from './components/Layout';
 import TextInput from './components/TextInput';
@@ -17,7 +18,10 @@ import translations from './translations'; // 确保路径正确
 // @ts-ignore
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { useRouter } from 'next/navigation'; // 使用 next/navigation 而不是 next/router
+import { useRouter } from 'next/navigation';
+import Script from 'next/script'
+
+// 移除 metadata 相关的代码
 
 type Translations = {
   [key: string]: {
@@ -54,6 +58,9 @@ export default function HomePage({ params }: HomePageProps) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [style, setStyle] = useState('Standard');
+
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const isTablet = useMediaQuery('(min-width:601px) and (max-width:960px)');
 
   useEffect(() => {
     setIsClient(true);
@@ -99,79 +106,106 @@ export default function HomePage({ params }: HomePageProps) {
   }
 
   return (
-    <Layout params={params} t={t}>
-      <Box sx={{ textAlign: 'center', mb: 3 }}> {/* 调整 margin-bottom */}
-        <Typography variant="h2">Humanize AI Text</Typography>
-        <Typography variant="h6" color="text.secondary" fontWeight="light">
-          Effortlessly convert AI-generated text from ChatGPT, Bard, Jasper, Grammarly, GPT4, and more into natural, human-like writing. Achieve 100% originality and bypass AI detection with the best Humanize AI tool.
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'flex', gap: 2, mb: 3 }}> {/* 调整 margin-bottom */}
-        {Object.keys(styles).map((styleKey) => (
-          <Tooltip key={styleKey} title={styles[styleKey as keyof typeof styles]}>
-            <Box
-              onClick={() => setStyle(styleKey)}
-              sx={{
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                backgroundColor: style === styleKey ? '#1976d2' : 'transparent',
-                color: style === styleKey ? '#fff' : 'inherit',
-                '&:hover': {
-                  backgroundColor: style === styleKey ? '#1565c0' : '#f0f0f0',
-                },
+    <>
+      <Layout params={params} t={t}>
+        <Box sx={{ textAlign: 'center', mb: isMobile ? 2 : 3 }}>
+          <Typography variant={isMobile ? "h4" : "h2"}>Humanize AI Text</Typography>
+          <Typography variant={isMobile ? "body1" : "h6"} color="text.secondary" fontWeight="light">
+            Effortlessly convert AI-generated text from ChatGPT, Bard, Jasper, Grammarly, GPT4, and more into natural, human-like writing. Achieve 100% originality and bypass AI detection with the best Humanize AI tool.
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: isMobile ? 2 : 3 }}>
+          {Object.keys(styles).map((styleKey) => (
+            <Tooltip key={styleKey} title={styles[styleKey as keyof typeof styles]}>
+              <Box
+                onClick={() => setStyle(styleKey)}
+                sx={{
+                  padding: isMobile ? '4px 8px' : '8px 16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  backgroundColor: style === styleKey ? '#1976d2' : 'transparent',
+                  color: style === styleKey ? '#fff' : 'inherit',
+                  '&:hover': {
+                    backgroundColor: style === styleKey ? '#1565c0' : '#f0f0f0',
+                  },
+                  fontSize: isMobile ? '0.8rem' : '1rem',
+                }}
+              >
+                {styleKey}
+              </Box>
+            </Tooltip>
+          ))}
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 2 }}>
+          <Box
+            sx={{
+              flex: 1,
+              border: 1,
+              borderRadius: 1,
+              p: 2,
+              boxShadow: 3,
+              bgcolor: 'var(--main-area-background)',
+              position: 'relative',
+              height: isMobile ? '50vh' : '75vh',
+              top: isMobile ? 0 : '-10px',
+            }}
+          >
+            <TextInput
+              value={inputText}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputText(e.target.value)}
+              t={t}
+            />
+            <Button
+              onClick={handleHumanize}
+              variant="contained"
+              color="primary"
+              disabled={isLoading}
+              sx={{ 
+                position: 'absolute', 
+                bottom: 16, 
+                right: 16, 
+                backgroundColor: '#1976d2',
+                fontSize: isMobile ? '0.8rem' : '1rem',
               }}
             >
-              {styleKey}
-            </Box>
-          </Tooltip>
-        ))}
-      </Box>
-      <Box sx={{ display: 'flex', gap: 4 }}>
-        <Box
-          sx={{
-            flex: 1,
-            border: 1,
-            borderRadius: 1,
-            p: 3,
-            boxShadow: 3,
-            bgcolor: 'var(--main-area-background)', // 使用新的背景色变量
-            position: 'relative',
-            height: '75vh', // 增加高度
-            top: '-10px', // 向上移动10px
-          }}
-        >
-          <TextInput
-            value={inputText}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputText(e.target.value)}
-            t={t}
-          />
-          <Button
-            onClick={handleHumanize}
-            variant="contained"
-            color="primary"
-            disabled={isLoading}
-            sx={{ position: 'absolute', bottom: 16, right: 16, backgroundColor: '#1976d2' }} // 更自然的按钮颜色
+              {t('humanize_button')}
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              flex: 1,
+              border: 1,
+              borderRadius: 1,
+              p: 2,
+              boxShadow: 3,
+              bgcolor: 'var(--main-area-background)',
+              position: 'relative',
+              height: isMobile ? '50vh' : '75vh',
+              top: isMobile ? 0 : '-10px',
+            }}
           >
-            {t('humanize_button')}
-          </Button>
+            <TextOutput value={outputText} isLoading={isLoading} />
+          </Box>
         </Box>
-        <Box
-          sx={{
-            flex: 1,
-            border: 1,
-            borderRadius: 1,
-            p: 3,
-            boxShadow: 3,
-            bgcolor: 'var(--main-area-background)', // 使用新的背景色变量
-            position: 'relative',
-            height: '75vh', // 增加高度
-            top: '-10px', // 向上移动10px
-          }}
-        >
-          <TextOutput value={outputText} isLoading={isLoading} />
-        </Box>
-      </Box>
-    </Layout>
+      </Layout>
+      <Script id="structured-data" type="application/ld+json">
+        {`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Humanize AI Text",
+            "description": "Convert AI-generated text into natural, human-like writing.",
+            "url": "https://humanize-ai.top",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "All",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          }
+        `}
+      </Script>
+    </>
   );
 }

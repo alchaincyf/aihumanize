@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography, useMediaQuery } from '@mui/material';
 
 export default function TextInput({ value, onChange, t }) {
   const [wordCount, setWordCount] = useState(0);
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     const countWords = (text) => {
@@ -26,7 +27,7 @@ export default function TextInput({ value, onChange, t }) {
         variant="outlined"
         margin="normal"
         multiline
-        rows={21}
+        rows={isMobile ? 10 : 21}
         sx={{
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
@@ -34,13 +35,20 @@ export default function TextInput({ value, onChange, t }) {
             },
             lineHeight: '1.5', // 设置行高
             padding: '16px', // 设置内边距
+            fontSize: isMobile ? '0.9rem' : '1rem',
           },
           height: '100%',
         }}
       />
       <Typography
         variant="body2"
-        sx={{ position: 'absolute', bottom: 0, left: 16, color: 'text.secondary' }}
+        sx={{ 
+          position: 'absolute', 
+          bottom: 0, 
+          left: 16, 
+          color: 'text.secondary',
+          fontSize: isMobile ? '0.7rem' : '0.8rem',
+        }}
       >
         {wordCount} words
       </Typography>
