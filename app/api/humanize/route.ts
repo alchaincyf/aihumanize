@@ -20,7 +20,6 @@ const styles = {
   - Conversational
   - Emotionally engaging
 
-
   ### Instructions
   Please transform the user's AI-generated content to make it sound more like it was written by a human. Human writing typically includes:
   - Natural phrases and simple sentences.
@@ -39,7 +38,6 @@ const styles = {
   - Professional
   - Scholarly
 
-
   ### Instructions
   Please transform the user's AI-generated content to make it sound more academic. Academic writing typically includes:
   - Formal phrases and complex sentences.
@@ -57,7 +55,6 @@ const styles = {
   - Clear
   - Concise
   - Accessible
-
 
   ### Instructions
   Please transform the user's AI-generated content to make it sound simpler and easier to understand. Simple writing typically includes:
@@ -95,7 +92,6 @@ const styles = {
   - Respectful
   - Professional
 
-
   ### Instructions
   Please transform the user's AI-generated content to make it sound more formal. Formal writing typically includes:
   - Polite phrases and respectful language.
@@ -114,7 +110,6 @@ const styles = {
   - Relaxed
   - Conversational
 
-
   ### Instructions
   Please transform the user's AI-generated content to make it sound more informal. Informal writing typically includes:
   - Casual phrases and relaxed language.
@@ -132,7 +127,6 @@ const styles = {
   - Detailed
   - Elaborate
   - Informative
-
 
   ### Instructions
   Please transform the user's AI-generated content to make it more detailed and comprehensive. Expanded writing typically includes:
@@ -205,11 +199,36 @@ export async function POST(request: Request) {
     await updateDoc(userRef, { wordsUsed: newWordsUsed });
     console.log('wordsUsed updated successfully');
 
-    return aiResponse;
+    return NextResponse.json({ messages: [aiResponse] }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error) {
     console.error('Detailed error in /api/humanize:', error);
-    return NextResponse.json({ error: 'Internal server error', details: error.message }, { status: 500 });
+    console.error('Request body:', await request.text());
+    console.error('Environment variables:', process.env);
+    // 注意：不要在生产环境中记录敏感信息
+    return NextResponse.json({ error: 'Internal server error', details: error.message }, { 
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   }
+}
+
+export async function OPTIONS() {
+  return NextResponse.json(
+    {},
+    {
+      headers: {
+        'Access-Control-Allow-Origin': '*', // 或者指定允许的域名
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    }
+  );
 }
 
 async function processAIRequest(text: string, style: string, messages: any[]) {
@@ -232,7 +251,11 @@ async function processAIRequest(text: string, style: string, messages: any[]) {
 
     const aiResponse = response.choices[0].message;
 
-    return NextResponse.json({ messages: [aiResponse] });
+    return NextResponse.json({ messages: [aiResponse] }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error) {
     console.error('Error in processAIRequest:', error);
 
