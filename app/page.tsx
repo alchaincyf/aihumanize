@@ -169,14 +169,7 @@ export default function HomePage({ params }: HomePageProps) {
             top: '-10px', // 向上移动10px
           }}
         >
-          {isLoading ? (
-            <CircularProgress
-              size={60}
-              sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
-            />
-          ) : (
-            <TextOutput value={outputText} />
-          )}
+          <TextOutput value={outputText} isLoading={isLoading} />
         </Box>
       </Box>
     </Layout>

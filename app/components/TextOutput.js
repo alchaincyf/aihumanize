@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Box, TextField, Typography, IconButton, Tooltip } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
+import Image from 'next/image';
 
-export default function TextOutput({ value }) {
+export default function TextOutput({ value, isLoading }) {
   const [wordCount, setWordCount] = useState(0);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -27,26 +28,37 @@ export default function TextOutput({ value }) {
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
-      <TextField
-        fullWidth
-        value={value}
-        multiline
-        rows={21}
-        InputProps={{
-          readOnly: true,
-        }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              border: 'none', // 去掉边框
+      {isLoading ? (
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100%' 
+        }}>
+          <Image src="/loading.svg" alt="Loading" width={100} height={100} />
+        </Box>
+      ) : (
+        <TextField
+          fullWidth
+          value={value}
+          multiline
+          rows={21}
+          InputProps={{
+            readOnly: true,
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                border: 'none', // 去掉边框
+              },
+              lineHeight: '1.5', // 设置行高
+              padding: '16px', // 设置内边距
             },
-            lineHeight: '1.5', // 设置行高
-            padding: '16px', // 设置内边距
-          },
-          height: '100%',
-          overflow: 'auto', // 支持滚动
-        }}
-      />
+            height: '100%',
+            overflow: 'auto', // 支持滚动
+          }}
+        />
+      )}
       <Typography
         variant="body2"
         sx={{ position: 'absolute', bottom: 2, left: 16, color: 'text.secondary' }}

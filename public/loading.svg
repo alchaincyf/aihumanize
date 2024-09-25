@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <style>
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    .dot {
+      fill: #333333; /* 更改为深灰色 */
+      animation: bounce 0.6s infinite alternate;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+  </style>
+  
+  <circle class="dot" cx="30" cy="50" r="5" />
+  <circle class="dot" cx="50" cy="50" r="5" />
+  <circle class="dot" cx="70" cy="50" r="5" />
+</svg>
