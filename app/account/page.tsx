@@ -29,6 +29,8 @@ export default function AccountPage() {
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
         if (userDoc.exists()) {
           setUserData(userDoc.data() as UserData);
+        } else {
+          console.error('User document does not exist');
         }
       } else {
         router.push('/login');
@@ -72,7 +74,7 @@ export default function AccountPage() {
           </Box>
           <Box sx={{ mb: 3 }}>
             <Typography variant="h6" sx={{ fontFamily: 'var(--font-montserrat)' }}>Words Limit</Typography>
-            <Typography>{userData?.wordsLimit || 'N/A'}</Typography>
+            <Typography>{userData?.wordsLimit || 5000}</Typography>
           </Box>
           <Box sx={{ mb: 3 }}>
             <Typography variant="h6" sx={{ fontFamily: 'var(--font-montserrat)' }}>Words Used</Typography>

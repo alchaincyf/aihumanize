@@ -2,27 +2,28 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebaseConfig';
-import { Box, Button, TextField, Typography, Paper, Container, Divider } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
+import { Box, Button, TextField, Typography, Paper, Container } from '@mui/material';
 import Layout from '../components/Layout';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const initializeUserDocument = async (user) => {
-    const userRef = doc(db, 'users', user.uid);
-    const userSnap = await getDoc(userRef);
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    if (!userSnap.exists()) {
+      // 初始化用户文档
       const now = new Date();
       const oneMonthLater = new Date(now.setMonth(now.getMonth() + 1));
-      await setDoc(userRef, {
+      await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
         accountLevel: 'free',
         wordsLimit: 5000,
@@ -31,28 +32,10 @@ export default function LoginPage() {
         subscriptionStatus: 'inactive',
         createdAt: new Date().toISOString(),
       });
-    }
-  };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      await initializeUserDocument(userCredential.user);
       router.push('/account');
-    } catch (error) {
-      setError('Failed to log in. Please check your credentials.');
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      await initializeUserDocument(result.user);
-      router.push('/account');
-    } catch (error) {
-      setError('Failed to log in with Google. Please try again.');
+    } catch (error: any) {
+      setError(error.message);
     }
   };
 
@@ -61,19 +44,9 @@ export default function LoginPage() {
       <Container maxWidth="sm">
         <Paper elevation={3} sx={{ mt: 8, p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Typography component="h1" variant="h4" sx={{ mb: 3, fontFamily: 'var(--font-playfair-display)' }}>
-            Log In
+            Register
           </Typography>
-          <Button
-            fullWidth
-            variant="contained"
-            startIcon={<GoogleIcon />}
-            onClick={handleGoogleLogin}
-            sx={{ mt: 1, mb: 2, fontFamily: 'var(--font-montserrat)' }}
-          >
-            Log in with Google
-          </Button>
-          <Divider sx={{ width: '100%', my: 2 }}>or</Divider>
-          <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
+          <Box component="form" onSubmit={handleRegister} sx={{ width: '100%' }}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -97,7 +70,7 @@ export default function LoginPage() {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               sx={{ mb: 2 }}
@@ -105,11 +78,11 @@ export default function LoginPage() {
             <Button
               type="submit"
               fullWidth
-              variant="outlined"
+              variant="contained"
               color="primary"
               sx={{ mt: 3, mb: 2, fontFamily: 'var(--font-montserrat)' }}
             >
-              Log In with Email
+              Register
             </Button>
           </Box>
           {error && (
