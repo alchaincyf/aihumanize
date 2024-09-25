@@ -22,11 +22,11 @@ const roboto = Roboto({
 })
 
 export const metadata: Metadata = {
-  title: 'Humanize AI Text | AI Text Humanizer Tool',
+  title: 'Humanize AI: Free Humanize AI Text & AI Humanizer Online',
   description: 'Convert AI-generated text into natural, human-like writing. Bypass AI detection and achieve 100% originality with our advanced AI text humanizer tool.',
   keywords: 'AI text humanizer, AI detection bypass, human-like writing, text conversion',
   openGraph: {
-    title: 'Humanize AI Text | AI Text Humanizer Tool',
+    title: 'Humanize AI: Free Humanize AI Text & AI Humanizer Online',
     description: 'Convert AI-generated text into natural, human-like writing. Bypass AI detection and achieve 100% originality.',
     url: 'https://humanize-ai.top',
     siteName: 'Humanize AI',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Humanize AI Text | AI Text Humanizer Tool',
+    title: 'Humanize AI: Free Humanize AI Text & AI Humanizer Online',
     description: 'Convert AI-generated text into natural, human-like writing. Bypass AI detection and achieve 100% originality.',
     images: ['https://humanize-ai.top/og-image.jpg'], // 使用相同的图片
   },
