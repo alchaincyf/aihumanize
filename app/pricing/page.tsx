@@ -38,7 +38,7 @@ const pricingTiers: PricingTier[] = [
       "50,000 words / mo.",
       "ALL modes and settings",
       "Re-paraphrasing is free",
-      "Unlimited words per process",
+      "2000 words per process",
       "Priority processing",
       "Email support"
     ],
@@ -50,10 +50,10 @@ const pricingTiers: PricingTier[] = [
     price: "$29.99 / mo.",
     paymentLink: "https://buy.stripe.com/fZebLhh1zeXFgqA7st",
     features: [
-      "Unlimited words",
+      "250,000 words / mo.",
       "ALL modes and settings",
       "Re-paraphrasing is free",
-      "Unlimited words per process",
+      "10000 words per process",
       "Continuous improvements",
       "Undetectable by all AIs",
       "No weird or random words",
