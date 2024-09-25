@@ -170,7 +170,8 @@ export async function POST(request: Request) {
     const wordCount = text.trim().split(/\s+/).length;
 
     if (wordCount <= 200) {
-      return await processAIRequest(text, style, messages);
+      const result = await processAIRequest(text, style, messages);
+      return NextResponse.json(result);
     }
 
     if (!userId) {
@@ -209,7 +210,7 @@ export async function POST(request: Request) {
     await updateDoc(userRef, { wordsUsed: newWordsUsed });
     console.log('wordsUsed updated successfully');
 
-    return NextResponse.json({ messages: [aiResponse] }, {
+    return NextResponse.json(aiResponse, {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*', // 或者指定允许的域名
