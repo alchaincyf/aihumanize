@@ -17,6 +17,8 @@ interface HistoryItem {
   timestamp: Timestamp;
   style: string;
   inputWordCount: number;
+  outputWordCount: number;
+  wordsUsed: number;
 }
 
 export default function HistoryPage() {
@@ -67,6 +69,12 @@ export default function HistoryPage() {
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 1, fontFamily: 'var(--font-roboto)' }}>
                     Input Word Count: {item.inputWordCount}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mb: 1, fontFamily: 'var(--font-roboto)' }}>
+                    Output Word Count: {item.outputWordCount}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mb: 1, fontFamily: 'var(--font-roboto)' }}>
+                    Words Used: {item.wordsUsed}
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 1, fontFamily: 'var(--font-roboto)' }}>
                     Date: {item.timestamp.toDate().toLocaleString()}

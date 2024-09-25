@@ -19,7 +19,8 @@ import translations from './translations'; // 确保路径正确
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import Script from 'next/script'
+import Script from 'next/script';
+import { doc, updateDoc, increment, getDoc } from 'firebase/firestore';
 
 // 移除 metadata 相关的代码
 
@@ -95,14 +96,43 @@ export default function HomePage({ params }: HomePageProps) {
       const outputText = data.messages[0].content;
       setOutputText(outputText);
 
-      // 保存历史记录
       if (auth.currentUser) {
-        const historyRef = collection(db, 'users', auth.currentUser.uid, 'history');
+        const userId = auth.currentUser.uid;
+        const userRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userRef);
+        const userData = userDoc.data();
+
+        // 修改计算单词数的方法
+        const countWords = (text: string) => {
+          const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+          const englishWords = text.match(/\b\w+\b/g) || [];
+          return chineseChars.length + englishWords.length;
+        };
+
+        // 计算使用的单词数
+        const inputWordCount = countWords(inputText);
+        const outputWordCount = countWords(outputText);
+        const wordsUsed = Math.max(inputWordCount, outputWordCount);
+
+        // 检查用户是否超过了单词限制
+        if (userData.wordsUsed + wordsUsed > userData.wordsLimit) {
+          throw new Error("You have exceeded your word limit. Please upgrade your plan.");
+        }
+
+        // 更新用户的 Words Used
+        await updateDoc(userRef, {
+          wordsUsed: increment(wordsUsed)
+        });
+
+        // 保存历史记录
+        const historyRef = collection(db, 'users', userId, 'history');
         await addDoc(historyRef, {
           inputText,
           outputText,
           style,
-          inputWordCount: inputText.split(/\s+/).length,
+          inputWordCount,
+          outputWordCount,
+          wordsUsed,
           timestamp: serverTimestamp(),
         });
       }
