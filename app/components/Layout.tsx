@@ -79,6 +79,9 @@ export default function Layout({ children, params, t }: LayoutProps) {
               </Button>
             </NextLink>
             <Box sx={{ flexGrow: 1 }} />
+            <NextLink href="/blog" passHref legacyBehavior>
+              <Button component="a" color="inherit">Blog</Button>
+            </NextLink>
             <NextLink href="/pricing" passHref legacyBehavior>
               <Button component="a" color="inherit">Pricing</Button>
             </NextLink>

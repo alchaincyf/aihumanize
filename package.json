@@ -20,8 +20,10 @@
     "@stripe/stripe-js": "^4.5.0",
     "firebase": "^10.13.2",
     "framer-motion": "^6.x.x",
+    "gray-matter": "^4.0.3",
     "next": "^14.2.13",
     "next-i18next": "^13.x.x",
+    "next-mdx-remote": "^5.0.0",
     "openai": ">=1.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -30,13 +32,13 @@
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "18.3.9",
     "@types/react-dom": "^18",
     "babel-loader": "^9.2.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "5.6.2"
   }
 }
