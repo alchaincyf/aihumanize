@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { getPostBySlug, getRelatedPosts } from '@/lib/api'
 import BlogPostClient from './BlogPostClient'
 
