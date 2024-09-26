@@ -5,13 +5,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   try {
     const post = await getPostBySlug(params.slug)
     return {
-      title: `${post.title || 'Untitled'} | My Blog`,
+      title: `${post.title || 'Untitled'} | Humanize AI Blog`,
       description: post.excerpt || '',
     }
   } catch (error) {
     console.error('Error generating metadata:', error)
     return {
-      title: 'Post Not Found | My Blog',
+      title: 'Post Not Found |  Blog',
       description: 'The requested post could not be found.',
     }
   }

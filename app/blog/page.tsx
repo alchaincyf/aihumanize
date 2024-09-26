@@ -1,5 +1,5 @@
 import { getAllPosts } from '@/lib/api'
-import { Typography, Container, Grid } from '@mui/material'
+import { Typography, Container, Box } from '@mui/material'
 import BlogPostCard from '@/app/components/BlogPostCard'
 import { Metadata } from 'next'
 
@@ -12,27 +12,37 @@ export default async function BlogIndex() {
   const posts = await getAllPosts()
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
-      <Typography 
-        variant="h1" 
-        component="h1"
-        sx={{ 
-          fontFamily: 'var(--font-sf-pro-display, sans-serif)',
-          fontWeight: 700,
-          fontSize: '3rem',
-          mb: 6,
-          color: '#1D1D1F'
-        }}
-      >
-        Blog
-      </Typography>
-      <Grid container spacing={4}>
-        {posts.map((post, index) => (
-          <Grid item xs={12} sm={6} md={4} key={post.slug}>
-            <BlogPostCard post={post} index={index} />
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <Box sx={{ 
+      backgroundColor: '#F5F5F7', 
+      minHeight: '100vh',
+      py: { xs: 4, md: 8 }
+    }}>
+      <Container maxWidth="lg">
+        <Typography 
+          variant="h1" 
+          component="h1"
+          sx={{ 
+            fontFamily: 'var(--font-sf-pro-display, sans-serif)',
+            fontWeight: 700,
+            fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+            mb: { xs: 4, md: 6 },
+            color: '#1D1D1F',
+            textAlign: 'center'
+          }}
+        >
+          Blog
+        </Typography>
+        <Box sx={{ 
+          columnCount: { xs: 1, sm: 2, md: 3 },
+          columnGap: '24px',
+        }}>
+          {posts.map((post, index) => (
+            <Box key={post.slug} sx={{ breakInside: 'avoid', marginBottom: '24px' }}>
+              <BlogPostCard post={post} index={index} />
+            </Box>
+          ))}
+        </Box>
+      </Container>
+    </Box>
   )
 }

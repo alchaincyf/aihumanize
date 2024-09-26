@@ -8,7 +8,20 @@ import Link from 'next/link'
 import BlogPostCard from '@/app/components/BlogPostCard'
 import ErrorBoundary from '@/app/components/ErrorBoundary'  // 你需要创建这个组件
 
-export default function BlogPostClient({ post, relatedPosts }) {
+// 定义 Post 接口
+interface Post {
+  title: string
+  content: string
+  // 添加其他必要的属性
+}
+
+// 定义 BlogPostClientProps 接口
+interface BlogPostClientProps {
+  post: Post
+  relatedPosts: Post[]
+}
+
+export default function BlogPostClient({ post, relatedPosts }: BlogPostClientProps) {
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
