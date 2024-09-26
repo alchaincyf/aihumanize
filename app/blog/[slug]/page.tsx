@@ -4,8 +4,41 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 import styles from './BlogPost.module.css'
 import Link from 'next/link'
 import BlogPostCard from '@/app/components/BlogPostCard'
+import { Metadata } from 'next'
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
+type Props = {
+  params: { slug: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await getPostBySlug(params.slug)
+  
+  if (!post) {
+    return {
+      title: 'Post not found',
+    }
+  }
+  
+  return {
+    title: `${post.title} | My Blog`, // 添加网站名称以增加品牌认知
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      publishedTime: post.date,
+      // 如果有文章封面图，可以在这里添加
+      // images: [post.coverImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+    },
+  }
+}
+
+export default async function BlogPost({ params }: Props) {
   const post = await getPostBySlug(params.slug)
   const relatedPosts = await getRelatedPosts(params.slug, 3)
 
