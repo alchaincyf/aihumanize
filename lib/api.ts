@@ -1,8 +1,21 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
+import { serialize } from 'next-mdx-remote/serialize'
+
+// 确保这个文件只在服务器端运行
+if (typeof window !== 'undefined') {
+  throw new Error('This file should only be used on the server side')
+}
 
 const postsDirectory = path.join(process.cwd(), 'posts')
+
+function formatDate(date: string | Date): string {
+  if (typeof date === 'string') {
+    return date
+  }
+  return date.toISOString().split('T')[0]
+}
 
 export function getAllPosts() {
   const fileNames = fs.readdirSync(postsDirectory)
@@ -14,22 +27,30 @@ export function getAllPosts() {
 
     return {
       slug,
-      ...(data as { date: string; title: string; excerpt?: string }),
+      ...data,
+      date: formatDate(data.date), // 使用新的 formatDate 函数
+      title: data.title || '',
+      excerpt: data.excerpt || '',
     }
   })
 
   return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1))
 }
 
-export function getPostBySlug(slug: string) {
+export async function getPostBySlug(slug: string) {
   const fullPath = path.join(postsDirectory, `${slug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
 
+  const mdxSource = await serialize(content)
+
   return {
     slug,
-    content,
-    ...(data as { date: string; title: string; excerpt?: string }),
+    content: mdxSource,
+    ...data,
+    date: formatDate(data.date), // 使用新的 formatDate 函数
+    title: data.title || '',
+    excerpt: data.excerpt || '',
   }
 }
 

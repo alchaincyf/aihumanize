@@ -16,67 +16,61 @@ interface BlogPostCardProps {
 
 export default function BlogPostCard({ post, index }: BlogPostCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+    <Card 
+      elevation={0}
+      sx={{ 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
+        transition: 'transform 0.3s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-5px)',
+        }
+      }}
     >
-      <Link href={`/blog/${post.slug}`} passHref style={{ textDecoration: 'none' }}>
-        <Card 
-          elevation={0}
-          sx={{ 
-            borderRadius: 2,
-            transition: 'all 0.3s',
-            '&:hover': { 
-              transform: 'translateY(-4px)',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-            }
-          }}
-        >
-          <CardActionArea>
-            <CardContent sx={{ p: 3 }}>
-              <Typography 
-                variant="h6" 
-                component="h2" 
-                gutterBottom 
-                sx={{ 
-                  fontFamily: 'var(--font-sf-pro-text, sans-serif)',
-                  fontWeight: 600,
-                  fontSize: '1.25rem',
-                  mb: 1
-                }}
-              >
-                {post.title}
-              </Typography>
-              <Typography 
-                variant="caption" 
-                color="text.secondary"
-                sx={{ 
-                  fontFamily: 'var(--font-sf-pro-text, sans-serif)',
-                  fontSize: '0.875rem',
-                  mb: 2,
-                  display: 'block'
-                }}
-              >
-                {post.date}
-              </Typography>
-              {post.excerpt && (
-                <Typography 
-                  variant="body2" 
-                  sx={{ 
-                    fontFamily: 'var(--font-sf-pro-text, sans-serif)',
-                    fontSize: '0.9rem',
-                    color: 'text.secondary',
-                    lineHeight: 1.6
-                  }}
-                >
-                  {post.excerpt}
-                </Typography>
-              )}
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      </Link>
-    </motion.div>
+      <CardActionArea component={Link} href={`/blog/${post.slug}`}>
+        <CardContent>
+          <Typography 
+            gutterBottom 
+            variant="h5" 
+            component="div"
+            sx={{ 
+              fontFamily: 'var(--font-sf-pro-display, sans-serif)',
+              fontWeight: 600,
+              fontSize: '1.5rem',
+              color: '#1D1D1F'
+            }}
+          >
+            {post.title}
+          </Typography>
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ 
+              fontFamily: 'var(--font-sf-pro-text, sans-serif)',
+              mb: 2
+            }}
+          >
+            {new Date(post.date).toLocaleDateString('zh-CN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </Typography>
+          {post.excerpt && (
+            <Typography 
+              variant="body2" 
+              color="text.secondary"
+              sx={{ 
+                fontFamily: 'var(--font-sf-pro-text, sans-serif)',
+              }}
+            >
+              {post.excerpt}
+            </Typography>
+          )}
+        </CardContent>
+      </CardActionArea>
+    </Card>
   )
 }

@@ -1,0 +1,114 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Typography, Box, Container, Button, Grid } from '@mui/material'
+import { MDXRemote } from 'next-mdx-remote'
+import styles from './BlogPost.module.css'
+import Link from 'next/link'
+import BlogPostCard from '@/app/components/BlogPostCard'
+import ErrorBoundary from '@/app/components/ErrorBoundary'  // 你需要创建这个组件
+
+export default function BlogPostClient({ post, relatedPosts }) {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return null // 或者返回一个加载指示器
+  }
+
+  if (!post) {
+    return (
+      <Container maxWidth="md" sx={{ py: 8 }}>
+        <Typography variant="h2" sx={{ fontFamily: 'var(--font-sf-pro-display, sans-serif)', fontWeight: 700 }}>
+          Post not found
+        </Typography>
+      </Container>
+    )
+  }
+
+  return (
+    <ErrorBoundary>
+      <Container maxWidth="md" sx={{ py: 8 }}>
+        <article>
+          <Typography 
+            variant="h1" 
+            component="h1"
+            sx={{ 
+              fontFamily: 'var(--font-sf-pro-display, sans-serif)',
+              fontWeight: 700,
+              fontSize: '2.5rem',
+              mb: 2,
+              color: '#1D1D1F'
+            }}
+          >
+            {post.title}
+          </Typography>
+          <Typography 
+            variant="subtitle1" 
+            sx={{ 
+              fontFamily: 'var(--font-sf-pro-text, sans-serif)',
+              fontSize: '1rem',
+              color: '#86868B',
+              mb: 6
+            }}
+          >
+            {post.date}
+          </Typography>
+          <Box className={styles.mdxContent}>
+            <MDXRemote {...post.content} />
+          </Box>
+        </article>
+
+        <Box sx={{ mt: 8, mb: 6, textAlign: 'center' }}>
+          <Link href="/" passHref>
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                backgroundColor: '#0071E3',
+                color: '#FFFFFF',
+                fontFamily: 'var(--font-sf-pro-text, sans-serif)',
+                fontWeight: 600,
+                padding: '12px 24px',
+                borderRadius: '8px',
+                textTransform: 'none',
+                '&:hover': {
+                  backgroundColor: '#0077ED'
+                }
+              }}
+            >
+              Humanize Your Article Now
+            </Button>
+          </Link>
+        </Box>
+
+        {relatedPosts.length > 0 && (
+          <Box sx={{ mt: 8 }}>
+            <Typography 
+              variant="h2" 
+              sx={{ 
+                fontFamily: 'var(--font-sf-pro-display, sans-serif)',
+                fontWeight: 600,
+                fontSize: '2rem',
+                mb: 4,
+                color: '#1D1D1F'
+              }}
+            >
+              Related Articles
+            </Typography>
+            <Grid container spacing={4}>
+              {relatedPosts.map((relatedPost, index) => (
+                <Grid item xs={12} sm={6} md={4} key={relatedPost.slug}>
+                  <BlogPostCard post={relatedPost} index={index} />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )}
+      </Container>
+    </ErrorBoundary>
+  )
+}
