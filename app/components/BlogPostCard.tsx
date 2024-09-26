@@ -39,7 +39,8 @@ export default function BlogPostCard({ post, index }: BlogPostCardProps) {
               fontFamily: 'var(--font-sf-pro-display, sans-serif)',
               fontWeight: 600,
               fontSize: '1.5rem',
-              color: '#1D1D1F'
+              color: '#1D1D1F',
+              mb: 2
             }}
           >
             {post.title}
@@ -52,7 +53,7 @@ export default function BlogPostCard({ post, index }: BlogPostCardProps) {
               mb: 2
             }}
           >
-            {new Date(post.date).toLocaleDateString('zh-CN', {
+            {post.date === 'No date' ? 'No date' : new Date(post.date).toLocaleDateString('zh-CN', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'
@@ -64,6 +65,13 @@ export default function BlogPostCard({ post, index }: BlogPostCardProps) {
               color="text.secondary"
               sx={{ 
                 fontFamily: 'var(--font-sf-pro-text, sans-serif)',
+                display: '-webkit-box',
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                lineHeight: 1.5,
+                height: '6em'
               }}
             >
               {post.excerpt}

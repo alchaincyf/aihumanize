@@ -24,7 +24,7 @@ export default async function BlogIndex() {
           color: '#1D1D1F'
         }}
       >
-        博客文章
+        Blog
       </Typography>
       <Grid container spacing={4}>
         {posts.map((post, index) => (

@@ -29,6 +29,11 @@ export default function BlogPostClient({ post, relatedPosts }) {
     )
   }
 
+  // 创建一个自定义组件来渲染 MDX 内容，但跳过第一个 h1 标签
+  const components = {
+    h1: ({ children }) => null, // 这将跳过所有的 h1 标签
+  }
+
   return (
     <ErrorBoundary>
       <Container maxWidth="md" sx={{ py: 8 }}>
@@ -58,7 +63,7 @@ export default function BlogPostClient({ post, relatedPosts }) {
             {post.date}
           </Typography>
           <Box className={styles.mdxContent}>
-            <MDXRemote {...post.content} />
+            <MDXRemote {...post.content} components={components} />
           </Box>
         </article>
 
