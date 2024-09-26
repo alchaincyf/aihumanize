@@ -32,3 +32,10 @@ export function getPostBySlug(slug: string) {
     ...(data as { date: string; title: string; excerpt?: string }),
   }
 }
+
+export async function getRelatedPosts(currentSlug: string, limit: number) {
+  const posts = await getAllPosts()
+  return posts
+    .filter(post => post.slug !== currentSlug)
+    .slice(0, limit)
+}

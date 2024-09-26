@@ -1,0 +1,95 @@
+.mdxContent {
+  font-family: var(--font-sf-pro-text, sans-serif);
+  color: #1D1D1F;
+  line-height: 1.6;
+}
+
+.mdxContent h2 {
+  font-family: var(--font-sf-pro-display, sans-serif);
+  font-weight: 600;
+  font-size: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #1D1D1F;
+}
+
+.mdxContent h3 {
+  font-family: var(--font-sf-pro-display, sans-serif);
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #1D1D1F;
+}
+
+.mdxContent p {
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+}
+
+.mdxContent a {
+  color: #0066CC;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mdxContent a:hover {
+  color: #0044AA;
+}
+
+.mdxContent ul, .mdxContent ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.mdxContent li {
+  margin-bottom: 0.5rem;
+}
+
+.mdxContent blockquote {
+  border-left: 4px solid #0066CC;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #86868B;
+}
+
+.mdxContent pre {
+  background-color: #F5F5F7;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'SF Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.mdxContent code {
+  background-color: #F5F5F7;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'SF Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.mdxContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.mdxContent h1 {
+  font-family: var(--font-sf-pro-display, sans-serif);
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: #1D1D1F;
+}
+
+@media (min-width: 600px) {
+  .mdxContent h1 {
+    font-size: 3.5rem;
+  }
+}
