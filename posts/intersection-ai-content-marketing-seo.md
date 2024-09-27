@@ -1,7 +1,7 @@
 ---
-title: "The Intersection of AI, Content Marketing, and SEO"
+title: "The Intersection of AI, Content Marketing, and SE O"
 date: "2024-09-28"
-excerpt: "Explore how AI, content marketing, and SEO intersect to create powerful digital marketing strategies."
+excerpt: "Explore how AI, content marketing, and SE O intersect to create powerful digital marketing strategies."
 ---
 
 # The Intersection of AI, Content Marketing, and SEO

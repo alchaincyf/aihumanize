@@ -1,7 +1,7 @@
 ---
-title: "Measuring SEO Success for Your AI Writing Enhancement Platform"
+title: "Measuring SE O Success for Your AI Writing Enhancement Platform"
 date: "2024-09-28"
-excerpt: "Learn how to effectively measure and analyze the SEO performance of your AI writing enhancement platform to drive continuous improvement."
+excerpt: "Learn how to effectively measure and analyze the SE O performance of your AI writing enhancement platform to drive continuous improvement."
 ---
 
 # Measuring SEO Success for Your AI Writing Enhancement Platform

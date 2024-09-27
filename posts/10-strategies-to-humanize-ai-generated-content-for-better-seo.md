@@ -1,7 +1,7 @@
 ---
-title: "10 Strategies to Humanize AI-Generated Content for Better SEO"
+title: "10 Strategies to Humanize AI Generated Content for Better SE O"
 date: "2024-03-15"
-excerpt: "Discover effective strategies to make AI-generated content more human-like and SEO-friendly."
+excerpt: "Discover effective strategies to make AI generated content more human like and SE O friendly."
 ---
 
 # 10 Strategies to Humanize AI-Generated Content for Better SEO

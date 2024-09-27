@@ -1,5 +1,5 @@
 ---
-title: "Optimizing Your AI Text Humanization Tool for Local SEO"
+title: "Optimizing Your AI Text Humanization Tool for Local SE O"
 date: "2024-09-28"
 excerpt: "Learn how to optimize your AI text humanization tool for local search engine optimization to attract nearby customers."
 ---

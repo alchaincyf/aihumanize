@@ -1,7 +1,7 @@
 ---
-title: "Building Authority in the AI Writing Niche: An SEO-Driven Approach"
+title: "Building Authority in the AI Writing Niche: An SE O Driven Approach"
 date: "2024-09-28"
-excerpt: "Learn how to establish your website as an authority in the AI writing niche using SEO-driven strategies."
+excerpt: "Learn how to establish your website as an authority in the AI writing niche using SE O driven strategies."
 ---
 
 # Building Authority in the AI Writing Niche: An SEO-Driven Approach

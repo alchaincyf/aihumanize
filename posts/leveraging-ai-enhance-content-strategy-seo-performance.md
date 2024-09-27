@@ -1,7 +1,7 @@
 ---
-title: "Leveraging AI to Enhance Your Content Strategy and SEO Performance"
+title: "Leveraging AI to Enhance Your Content Strategy and SE O Performance"
 date: "2024-03-23"
-excerpt: "Discover how to use AI tools to improve your content strategy and boost your SEO performance."
+excerpt: "Discover how to use AI tools to improve your content strategy and boost your SE O performance."
 ---
 
 # Leveraging AI to Enhance Your Content Strategy and SEO Performance

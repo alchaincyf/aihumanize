@@ -1,7 +1,7 @@
 ---
-title: "Creating User-Centric AI Text Services: An SEO Perspective"
+title: "Creating User Centric AI Text Services: An SE O Perspective"
 date: "2024-03-22"
-excerpt: "Learn how to develop AI text services that prioritize user experience while maintaining strong SEO performance."
+excerpt: "Learn how to develop AI text services that prioritize user experience while maintaining strong SE O performance."
 ---
 
 # Creating User-Centric AI Text Services: An SEO Perspective

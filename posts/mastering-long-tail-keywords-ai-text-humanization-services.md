@@ -1,7 +1,7 @@
 ---
 title: 'Mastering Long-Tail Keywords for AI Text Humanization Services'
 date: "2024-03-18"
-excerpt: "Learn how to effectively use long-tail keywords to improve the visibility of your AI text humanization services in search results."
+excerpt: "Learn how to effectively use long tail keywords to improve the visibility of your AI text humanization services in search results."
 ---
 
 # Mastering Long-Tail Keywords for AI Text Humanization Services

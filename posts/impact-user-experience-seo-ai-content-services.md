@@ -1,7 +1,7 @@
 ---
-title: "The Impact of User Experience on SEO for AI Content Services"
+title: "The Impact of User Experience on SE O for AI Content Services"
 date: "2024-09-28"
-excerpt: "Explore how user experience affects SEO performance for AI content services and learn strategies to improve both simultaneously."
+excerpt: "Explore how user experience affects SE O performance for AI content services and learn strategies to improve both simultaneously."
 ---
 
 # The Impact of User Experience on SEO for AI Content Services

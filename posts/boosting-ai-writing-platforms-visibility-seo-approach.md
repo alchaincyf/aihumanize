@@ -1,7 +1,7 @@
 ---
-title: "Boosting Your AI Writing Platform's Visibility: An SEO Approach"
+title: "Boosting Your AI Writing Platform's Visibility: An SE O Approach"
 date: "2024-03-20"
-excerpt: "Learn effective SEO strategies to increase the visibility of your AI writing platform in search engine results."
+excerpt: "Learn effective SE O strategies to increase the visibility of your AI writing platform in search engine results."
 ---
 
 # Boosting Your AI Writing Platform's Visibility: An SEO Approach

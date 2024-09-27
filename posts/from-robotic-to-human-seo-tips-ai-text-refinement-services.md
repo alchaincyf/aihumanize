@@ -1,7 +1,7 @@
 ---
-title: "From Robotic to Human: SEO Tips for AI Text Refinement Services"
+title: "From Robotic to Human: SE O Tips for AI Text Refinement Services"
 date: "2024-09-28"
-excerpt: "Discover effective SEO strategies to make AI-generated text more human-like and improve search engine rankings."
+excerpt: "Discover effective SE O strategies to make AI generated text more human like and improve search engine rankings."
 ---
 
 # From Robotic to Human: SEO Tips for AI Text Refinement Services

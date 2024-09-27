@@ -1,7 +1,7 @@
 ---
-title: "SEO Best Practices for Websites Offering AI Content Humanization"
+title: "SE O Best Practices for Websites Offering AI Content Humanization"
 date: "2024-03-19"
-excerpt: "Discover essential SEO best practices to optimize websites that offer AI content humanization services."
+excerpt: "Discover essential SE O best practices to optimize websites that offer AI content humanization services."
 ---
 
 # SEO Best Practices for Websites Offering AI Content Humanization

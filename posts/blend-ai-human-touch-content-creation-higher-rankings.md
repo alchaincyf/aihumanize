@@ -1,7 +1,7 @@
 ---
 title: "How to Blend AI and Human Touch in Content Creation for Higher Rankings"
 date: "2024-03-17"
-excerpt: "Discover effective techniques to combine AI-generated content with human creativity for improved search engine rankings."
+excerpt: "Discover effective techniques to combine AI generated content with human creativity for improved search engine rankings."
 ---
 
 # How to Blend AI and Human Touch in Content Creation for Higher Rankings

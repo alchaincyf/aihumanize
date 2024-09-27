@@ -1,7 +1,7 @@
 ---
-title: "Creating SEO-Friendly Landing Pages for AI Writing Tools"
+title: "Creating SE O Friendly Landing Pages for AI Writing Tools"
 date: "2024-09-28"
-excerpt: "Discover best practices for creating highly effective and SEO-optimized landing pages for AI writing tools and services."
+excerpt: "Discover best practices for creating highly effective and SE O optimized landing pages for AI writing tools and services."
 ---
 
 # Creating SEO-Friendly Landing Pages for AI Writing Tools

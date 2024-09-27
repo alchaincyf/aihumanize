@@ -1,7 +1,7 @@
 ---
-title: "The Role of Natural Language Processing in SEO-Friendly AI Content"
+title: "The Role of Natural Language Processing in SE O Friendly AI Content"
 date: "2024-03-21"
-excerpt: "Explore how Natural Language Processing (NLP) contributes to creating SEO-friendly AI-generated content."
+excerpt: "Explore how Natural Language Processing ( NL P) contributes to creating SE O friendly AI generated content."
 ---
 
 # The Role of Natural Language Processing in SEO-Friendly AI Content
