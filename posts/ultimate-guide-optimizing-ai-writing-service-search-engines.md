@@ -46,6 +46,9 @@ Long-tail keyword idea: "Best AI writing tool for creating SEO-optimized content
 
 ## 3. On-Page SEO Optimization
 
+![3. On-Page SEO Optimization](/images/04.jpeg)
+
+
 On-page SEO refers to the practice of optimizing individual web pages to rank higher and earn more relevant traffic. For your AI writing service, consider these on-page SEO tactics:
 
 1. Optimize title tags: Create compelling, keyword-rich titles under 60 characters.
@@ -93,6 +96,9 @@ Long-tail keyword idea: "Comparing human-written vs AI-generated content for SEO
 
 ## 6. User Experience Optimization
 
+![6. User Experience Optimization](/images/23.jpeg)
+
+
 Search engines prioritize websites that provide excellent user experiences. For your AI writing service, focus on these UX elements:
 
 1. Intuitive navigation: Make it easy for users to find what they're looking for with clear menus and logical site structure.
@@ -108,6 +114,9 @@ For example, you could create an interactive demo that allows users to input a t
 Long-tail keyword idea: "User-friendly AI writing tools for beginners"
 
 ## 7. Mobile Optimization
+
+![7. Mobile Optimization](/images/10.jpeg)
+
 
 With mobile devices accounting for over half of global web traffic, mobile optimization is no longer optional. For your AI writing service, consider these mobile-specific strategies:
 

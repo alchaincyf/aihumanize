@@ -81,6 +81,9 @@ Long-tail keyword ideas:
 
 ## 5. Leveraging Social Proof and Testimonials
 
+![5. Leveraging Social Proof and Testimonials](/images/14.jpeg)
+
+
 Social proof can significantly influence potential users and boost your site's credibility in the eyes of both visitors and search engines.
 
 ### Ways to Incorporate Social Proof:
@@ -115,6 +118,9 @@ Long-tail keyword ideas:
 
 ## 7. Creating and Optimizing Video Content
 
+![7. Creating and Optimizing Video Content](/images/09.jpeg)
+
+
 Video content can help you reach a broader audience and improve engagement on your site. It's also an excellent way to explain complex AI writing concepts visually.
 
 ### Tips for Effective Video Content:
@@ -148,6 +154,9 @@ Long-tail keyword ideas:
 - "Tips for optimizing AI-generated content for SEO"
 
 ## 9. Hosting Webinars and Online Events
+
+![9. Hosting Webinars and Online Events](/images/17.jpeg)
+
 
 Webinars and online events can help you connect with your audience directly, showcasing your expertise in real-time.
 

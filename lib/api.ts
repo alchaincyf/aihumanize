@@ -42,8 +42,16 @@ function extractFirstParagraph(content: string): string {
   const paragraphs = content.split('\n\n')
   for (const paragraph of paragraphs) {
     const trimmed = paragraph.trim()
-    if (trimmed && !trimmed.startsWith('#')) {
-      return trimmed
+    if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('![')) {
+      // 移除图片标记
+      const textOnly = trimmed.replace(/!\[.*?\]\(.*?\)/g, '').trim()
+      // 将文本分割成单词
+      const words = textOnly.split(/\s+/)
+      // 限制单词数量到25个
+      if (words.length > 25) {
+        return words.slice(0, 25).join(' ') + '...'
+      }
+      return textOnly
     }
   }
   return ''
@@ -62,13 +70,23 @@ export function getAllPosts() {
       const h1Title = extractH1Title(content)
       const firstParagraph = extractFirstParagraph(content)
 
-      return {
+      const imageRegex = /!\[.*?\]\((.*?)\)/g;
+      const imageMatch = content.match(imageRegex);
+      const coverImage = imageMatch ? imageMatch[0].match(/\((.*?)\)/)[1] : null;
+
+      const post = {
         slug,
         ...data,
         date: formatDate(data.date),
         title: h1Title || data.title || formatTitle(fileName),
-        excerpt: firstParagraph || data.excerpt || '',
+        excerpt: firstParagraph,
+        coverImage: coverImage || data.coverImage || null,
       }
+
+      console.log(`Post ${post.slug} coverImage:`, post.coverImage);
+      console.log(`Post ${post.slug} excerpt:`, post.excerpt);
+
+      return post;
     })
 
   return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1))
@@ -111,4 +129,12 @@ export async function getRelatedPosts(currentSlug: string, limit: number) {
   return posts
     .filter(post => post.slug !== currentSlug)
     .slice(0, limit)
+}
+
+export async function getPaginatedPosts(page: number, limit: number) {
+  const start = (page - 1) * limit;
+  const end = start + limit;
+  
+  const posts = await getAllPosts();
+  return posts.slice(start, end);
 }
