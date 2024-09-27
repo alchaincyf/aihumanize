@@ -72,7 +72,13 @@ export function getAllPosts() {
 
       const imageRegex = /!\[.*?\]\((.*?)\)/g;
       const imageMatch = content.match(imageRegex);
-      const coverImage = imageMatch ? imageMatch[0].match(/\((.*?)\)/)[1] : null;
+      let coverImage = null;
+      if (imageMatch && imageMatch.length > 0) {
+        const firstImageMatch = imageMatch[0].match(/\((.*?)\)/);
+        if (firstImageMatch && firstImageMatch.length > 1) {
+          coverImage = firstImageMatch[1];
+        }
+      }
 
       const post = {
         slug,
