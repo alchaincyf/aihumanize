@@ -99,34 +99,40 @@ export function getAllPosts() {
 }
 
 export async function getPostBySlug(slug: string) {
-  const decodedSlug = decodeURIComponent(slug)
-  const fileNames = fs.readdirSync(postsDirectory)
-  const fileName = fileNames.find(file => {
-    if (file === '.DS_Store') return false
-    const fileNameWithoutExtension = file.replace(/\.(md|mdx)$/, '')
-    return fileNameWithoutExtension === decodedSlug || fileNameWithoutExtension.startsWith(decodedSlug)
-  })
+  try {
+    const decodedSlug = decodeURIComponent(slug)
+    const fileNames = fs.readdirSync(postsDirectory)
+    const fileName = fileNames.find(file => {
+      if (file === '.DS_Store') return false
+      const fileNameWithoutExtension = file.replace(/\.(md|mdx)$/, '')
+      return fileNameWithoutExtension === decodedSlug || fileNameWithoutExtension.startsWith(decodedSlug)
+    })
 
-  if (!fileName) {
-    throw new Error(`No file found for slug: ${decodedSlug}`)
-  }
+    if (!fileName) {
+      console.error(`No file found for slug: ${decodedSlug}`)
+      return null
+    }
 
-  const fullPath = path.join(postsDirectory, fileName)
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const { data, content } = matter(fileContents)
+    const fullPath = path.join(postsDirectory, fileName)
+    const fileContents = fs.readFileSync(fullPath, 'utf8')
+    const { data, content } = matter(fileContents)
 
-  const h1Title = extractH1Title(content)
-  const firstParagraph = extractFirstParagraph(content)
+    const h1Title = extractH1Title(content)
+    const firstParagraph = extractFirstParagraph(content)
 
-  const mdxSource = await serialize(content)
+    const mdxSource = await serialize(content)
 
-  return {
-    slug: decodedSlug,
-    content: mdxSource,
-    ...data,
-    date: formatDate(data.date),
-    title: h1Title || data.title || formatTitle(fileName),
-    excerpt: firstParagraph || data.excerpt || '',
+    return {
+      slug: decodedSlug,
+      content: mdxSource,
+      ...data,
+      date: formatDate(data.date),
+      title: h1Title || data.title || formatTitle(fileName),
+      excerpt: firstParagraph || data.excerpt || '',
+    }
+  } catch (error) {
+    console.error(`Error in getPostBySlug for slug ${slug}:`, error)
+    throw error
   }
 }
 

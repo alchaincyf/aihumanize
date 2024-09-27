@@ -8,16 +8,15 @@ import { MDXRemote } from 'next-mdx-remote'
 import styles from './BlogPost.module.css'
 import Link from 'next/link'
 import BlogPostCard from '@/app/components/BlogPostCard'
-import ErrorBoundary from '@/app/components/ErrorBoundary'  // 你需要创建这个组件
+import ErrorBoundary from '@/app/components/ErrorBoundary'
 
-// 定义 Post 接口
 interface Post {
   title: string
   content: string
-  // 添加其他必要的属性
+  date: string
+  slug: string
 }
 
-// 定义 BlogPostClientProps 接口
 interface BlogPostClientProps {
   post: Post
   relatedPosts: Post[]
