@@ -1,7 +1,7 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
-import { serialize } from 'next-mdx-remote/serialize'
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import { serialize } from 'next-mdx-remote/serialize';
 
 // 确保这个文件只在服务器端运行
 if (typeof window !== 'undefined') {
@@ -57,12 +57,25 @@ function extractFirstParagraph(content: string): string {
   return ''
 }
 
+function generateUniqueSlug(fileName: string, date: string): string {
+  const baseSlug = fileName.replace(/\.(md|mdx)$/, '')
+  const dateString = new Date(date).toISOString().split('T')[0]
+  return `${baseSlug}-${dateString}`
+}
+
 export function getAllPosts() {
   const fileNames = fs.readdirSync(postsDirectory)
+  const slugs = new Set()
   const allPostsData = fileNames
     .filter(fileName => fileName !== '.DS_Store' && /\.(md|mdx)$/.test(fileName))
     .map((fileName) => {
-      const slug = fileName.replace(/\.(md|mdx)$/, '')
+      const slug = generateUniqueSlug(fileName, data.date)
+      if (slugs.has(slug)) {
+        console.warn(`Duplicate slug found: ${slug}`)
+        return null
+      }
+      slugs.add(slug)
+
       const fullPath = path.join(postsDirectory, fileName)
       const fileContents = fs.readFileSync(fullPath, 'utf8')
       const { data, content } = matter(fileContents)
@@ -92,8 +105,9 @@ export function getAllPosts() {
       console.log(`Post ${post.slug} coverImage:`, post.coverImage);
       console.log(`Post ${post.slug} excerpt:`, post.excerpt);
 
-      return post;
+      return post
     })
+    .filter(post => post !== null) // 移除重复的帖子
 
   return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1))
 }

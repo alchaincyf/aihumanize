@@ -7,15 +7,19 @@ const nextConfig = {
   images: {
     domains: ['humanize-ai.top'],
   },
-  async rewrites() {
-    return [
-      {
-        source: '/sitemap.xml',
-        destination: '/api/sitemap',
-      },
-    ];
-  },
   output: 'standalone',
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
+  experimental: {
+    esmExternals: true
+  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

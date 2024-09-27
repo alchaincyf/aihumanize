@@ -3,7 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-export default function LangLayout({ children, params }) {
+interface LangLayoutProps {
+  children: React.ReactNode;
+  params: {
+    lang: string;
+  };
+}
+
+export default function LangLayout({ children, params }: LangLayoutProps) {
   const router = useRouter();
 
   useEffect(() => {

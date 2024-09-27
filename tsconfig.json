@@ -29,7 +29,7 @@
     "baseUrl": ".",
     "target": "ESNext",
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false  // 允许隐式的 any 类型
+    "noImplicitAny": true  // 允许隐式的 any 类型
   },
   "include": [
     "next-env.d.ts",
