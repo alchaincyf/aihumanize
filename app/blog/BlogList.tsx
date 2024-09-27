@@ -38,7 +38,7 @@ const BlogList = ({ initialPosts }) => {
     if (inView && !isLoading) {
       loadMorePosts();
     }
-  }, [inView]);
+  }, [inView, isLoading, loadMorePosts]);
 
   return (
     <div>
