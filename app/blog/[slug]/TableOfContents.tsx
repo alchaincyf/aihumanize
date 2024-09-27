@@ -17,11 +17,15 @@ const TableOfContents: React.FC<{ content: string }> = ({ content }) => {
   useEffect(() => {
     const headings = content.match(/^#{2,3} .+$/gm) || [];
     const tocItems = headings.map(heading => {
-      const level = heading.match(/^#+/)[0].length;
-      const text = heading.replace(/^#+\s/, '');
-      const id = text.toLowerCase().replace(/\s/g, '-');
-      return { id, text, level };
-    });
+      const match = heading.match(/^(#+)\s(.+)$/);
+      if (match) {
+        const level = match[1].length;
+        const text = match[2];
+        const id = text.toLowerCase().replace(/\s/g, '-');
+        return { id, text, level };
+      }
+      return null;
+    }).filter((item): item is TOCItem => item !== null);
     setToc(tocItems);
   }, [content]);
 
