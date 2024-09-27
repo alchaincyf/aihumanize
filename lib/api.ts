@@ -69,16 +69,16 @@ export function getAllPosts() {
   const allPostsData = fileNames
     .filter(fileName => fileName !== '.DS_Store' && /\.(md|mdx)$/.test(fileName))
     .map((fileName) => {
+      const fullPath = path.join(postsDirectory, fileName)
+      const fileContents = fs.readFileSync(fullPath, 'utf8')
+      const { data, content } = matter(fileContents)
+
       const slug = generateUniqueSlug(fileName, data.date)
       if (slugs.has(slug)) {
         console.warn(`Duplicate slug found: ${slug}`)
         return null
       }
       slugs.add(slug)
-
-      const fullPath = path.join(postsDirectory, fileName)
-      const fileContents = fs.readFileSync(fullPath, 'utf8')
-      const { data, content } = matter(fileContents)
 
       const h1Title = extractH1Title(content)
       const firstParagraph = extractFirstParagraph(content)
