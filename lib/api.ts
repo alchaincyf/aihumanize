@@ -57,10 +57,13 @@ function extractFirstParagraph(content: string): string {
   return ''
 }
 
-function generateUniqueSlug(fileName: string, date: string): string {
-  const baseSlug = fileName.replace(/\.(md|mdx)$/, '')
-  const dateString = new Date(date).toISOString().split('T')[0]
-  return `${baseSlug}-${dateString}`
+function generateUniqueSlug(fileName: string): string {
+  return fileName.replace(/\.(md|mdx)$/, '').toLowerCase()
+    .replace(/\s+/g, '-')           // 将空���替换为连字符
+    .replace(/[^\w\-]+/g, '')       // 移除非单词字符（除了连字符）
+    .replace(/\-\-+/g, '-')         // 将多个连字符替换为单个连字符
+    .replace(/^-+/, '')             // 去掉开头的连字符
+    .replace(/-+$/, '');            // 去掉结尾的连字符
 }
 
 export function getAllPosts() {
@@ -73,10 +76,11 @@ export function getAllPosts() {
       const fileContents = fs.readFileSync(fullPath, 'utf8')
       const { data, content } = matter(fileContents)
 
-      const slug = generateUniqueSlug(fileName, data.date)
-      if (slugs.has(slug)) {
-        console.warn(`Duplicate slug found: ${slug}`)
-        return null
+      let slug = generateUniqueSlug(fileName)
+      let slugCounter = 1
+      while (slugs.has(slug)) {
+        slug = `${generateUniqueSlug(fileName)}-${slugCounter}`
+        slugCounter++
       }
       slugs.add(slug)
 
@@ -118,8 +122,8 @@ export async function getPostBySlug(slug: string) {
     const fileNames = fs.readdirSync(postsDirectory)
     const fileName = fileNames.find(file => {
       if (file === '.DS_Store') return false
-      const fileNameWithoutExtension = file.replace(/\.(md|mdx)$/, '')
-      return fileNameWithoutExtension === decodedSlug || fileNameWithoutExtension.startsWith(decodedSlug)
+      const fileSlug = generateUniqueSlug(file)
+      return fileSlug === decodedSlug || fileSlug.startsWith(decodedSlug)
     })
 
     if (!fileName) {
