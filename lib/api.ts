@@ -59,7 +59,7 @@ function extractFirstParagraph(content: string): string {
 
 function generateUniqueSlug(fileName: string): string {
   return fileName.replace(/\.(md|mdx)$/, '').toLowerCase()
-    .replace(/\s+/g, '-')           // 将空���替换为连字符
+    .replace(/\s+/g, '-')           // 将空替换为连字符
     .replace(/[^\w\-]+/g, '')       // 移除非单词字符（除了连字符）
     .replace(/\-\-+/g, '-')         // 将多个连字符替换为单个连字符
     .replace(/^-+/, '')             // 去掉开头的连字符
@@ -117,40 +117,27 @@ export function getAllPosts() {
 }
 
 export async function getPostBySlug(slug: string) {
+  console.log('Attempting to get post with slug:', slug); // 调试日志
+  const realSlug = slug.replace(/\.md$/, '')
+  const fullPath = path.join(postsDirectory, `${realSlug}.md`)
+  
+  console.log('Full path:', fullPath); // 调试日志
+
   try {
-    const decodedSlug = decodeURIComponent(slug)
-    const fileNames = fs.readdirSync(postsDirectory)
-    const fileName = fileNames.find(file => {
-      if (file === '.DS_Store') return false
-      const fileSlug = generateUniqueSlug(file)
-      return fileSlug === decodedSlug || fileSlug.startsWith(decodedSlug)
-    })
-
-    if (!fileName) {
-      console.error(`No file found for slug: ${decodedSlug}`)
-      return null
-    }
-
-    const fullPath = path.join(postsDirectory, fileName)
     const fileContents = fs.readFileSync(fullPath, 'utf8')
+    console.log('File contents read successfully'); // 调试日志
     const { data, content } = matter(fileContents)
 
-    const h1Title = extractH1Title(content)
-    const firstParagraph = extractFirstParagraph(content)
-
-    const mdxSource = await serialize(content)
-
     return {
-      slug: decodedSlug,
-      content: mdxSource,
-      ...data,
-      date: formatDate(data.date),
-      title: h1Title || data.title || formatTitle(fileName),
-      excerpt: firstParagraph || data.excerpt || '',
+      slug: realSlug,
+      title: data.title,
+      date: data.date,
+      content: content,
+      excerpt: data.excerpt,
     }
   } catch (error) {
-    console.error(`Error in getPostBySlug for slug ${slug}:`, error)
-    throw error
+    console.error('Error reading file:', error); // 错误日志
+    return null;
   }
 }
 
