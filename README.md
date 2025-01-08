@@ -115,7 +115,7 @@ styles/
 
 1. **克隆项目到本地**：
    ```bash
-   git clone https://github.com/your-repo/my-website.git
+   git clone https://github.com/alchaincyf/aihumanize.git
    ```
 
 2. **安装依赖**：
